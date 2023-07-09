@@ -1,0 +1,5 @@
+tạo project react tại dây
+
+file này tạo ra để push thư mục lên github
+
+có thể xóa file này đi
