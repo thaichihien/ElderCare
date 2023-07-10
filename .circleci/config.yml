@@ -2,40 +2,16 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.0
 jobs:
-  api-install:
-    executor: node/default
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Install Node.js dependencies with Npm
-          command: |
-            cd ~/app/server
-            npm ci
-      - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - ~/app/server/node_modules
-      - persist_to_workspace:
-          root: ~/app
-          paths:
-            - .
-  test:
+
+  build-and-test:
     executor:
       name: node/default
-    
+    working_directory: ~/eldercare/server
     steps:
-      - attach_workspace:
-          at: ~/app
-      - run:
-          command: |
-            cd ~/app/server
-            npm run test
+      - checkout:
+          path: ~/eldercare 
+      - run: find "$PWD"
 workflows:
   build-and-test:
     jobs:
-      - api-install
-      - test:
-          requires:
-            - api-install
+      - build-and-test
