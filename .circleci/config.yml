@@ -1,19 +1,8 @@
 version: 2.1
 orbs:
   node: circleci/node@3.0.0
-jobs:
-  api-test:
-    executor:
-      name: node/default
-    working_directory: ~/eldercare/server
-    steps:
-      - attach_workspace:
-          at: ~/eldercare
-      - run: 
-          command: |
-            cd ~/eldercare/server
-            npm run test 
-  api-install:
+jobs: 
+  install-and-test:
     executor:
       name: node/default
     working_directory: ~/eldercare/server
@@ -22,10 +11,8 @@ jobs:
           path: ~/eldercare  
       - run: |
           npm i
+          npm run test
 workflows:
   build-and-test:
     jobs:
-      - api-install
-      - api-test:
-          requires:
-            - api-install
+      - install-and-test
