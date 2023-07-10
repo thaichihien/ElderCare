@@ -9,9 +9,9 @@ jobs:
     working_directory: ~/eldercare/server
     steps:
       - checkout:
-          path: ~/eldercare 
-      - node/install-packages 
-      - run: find "$PWD"
+          path: ~/eldercare  
+      - run: |
+          npm i
 workflows:
   build-and-test:
     jobs:
