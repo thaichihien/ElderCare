@@ -3,15 +3,21 @@ orbs:
   node: circleci/node@3.0.0
 jobs:
 
-  build-and-test:
+  api-install:
     executor:
       name: node/default
     working_directory: ~/eldercare/server
     steps:
       - checkout:
           path: ~/eldercare  
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run: |
-          npm i
+          npm ci
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/eldercare/server/node_modules
 workflows:
   build-and-test:
     jobs:
