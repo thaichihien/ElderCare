@@ -6,7 +6,7 @@ orbs:
 jobs: 
   test:
     executor:
-      name: node/default
+      name: node
     working_directory: ~/eldercare/server
     steps:
       - checkout:
@@ -16,7 +16,7 @@ jobs:
       - run: npm run test
   install:
     executor:
-      name: node/default
+      name: node
     working_directory: ~/eldercare/server
     steps:
       - checkout:
