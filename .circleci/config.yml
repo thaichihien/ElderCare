@@ -9,8 +9,8 @@ jobs:
     steps:
       - checkout:
           path: ~/eldercare
-    - run: 
-        command: npm run test 
+      - run: 
+          command: npm run test 
   api-install:
     executor:
       name: node/default
