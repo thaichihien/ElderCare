@@ -7,7 +7,8 @@ jobs:
       name: node/default
     working_directory: ~/eldercare/server
     steps:
-      - checkout
+      - checkout:
+          path: ~/eldercare 
       - node/install-packages
       - run:
           command: npm run test
