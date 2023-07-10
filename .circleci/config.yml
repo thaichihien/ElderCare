@@ -3,7 +3,7 @@ orbs:
   node: circleci/node@3.0.0
 jobs:
   api-install:
-    executor: node
+    executor: node/default
     steps:
       - checkout
       - restore_cache:
