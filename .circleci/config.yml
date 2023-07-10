@@ -9,7 +9,8 @@ jobs:
     steps:
       - checkout:
           path: ~/eldercare 
-      - node/install-packages
+      - node/install-packages:
+          app-dir: ~/server
       - run:
           command: npm run test
 workflows:
