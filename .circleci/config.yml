@@ -10,7 +10,9 @@ jobs:
       - attach_workspace:
           at: ~/eldercare
       - run: 
-          command: npm run test 
+          command: |
+            cd ~/eldercare/server
+            npm run test 
   api-install:
     executor:
       name: node/default
