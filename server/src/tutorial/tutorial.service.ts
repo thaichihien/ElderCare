@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Tutorial } from './schemas/tutorial.schema';
 import mongoose from 'mongoose';
@@ -20,7 +20,7 @@ export class TutorialService {
     const tutorial = await this.tutorialModel.findById(id);
 
     if (!tutorial) {
-      throw new NotFoundException(`tutorial not found with id ${id}`);
+      throw new BadRequestException(`tutorial not found with id ${id}`);
     }
 
     return tutorial;
