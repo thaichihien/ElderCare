@@ -4,8 +4,9 @@ import { Injectable } from '@nestjs/common';
 export class AppService {
   getHello(): any {
     return {
-      "server" : "Elder care",
-      "createdAt" : "09/07/2023"
+      server: 'Elder care',
+      createdAt: '09/07/2023',
+      'API document': 'http://localhost:3000/doc',
     };
   }
 }
