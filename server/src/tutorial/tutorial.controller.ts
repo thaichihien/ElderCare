@@ -14,7 +14,9 @@ import { IsObjectId } from 'src/utils/is-object-id.pipe';
 
 @Controller('tutorial')
 export class TutorialController {
+  // Cài đặt service
   constructor(private tutorialService: TutorialService) {}
+
 
   @Get()
   async getAllTutorials(): Promise<Tutorial[]> {

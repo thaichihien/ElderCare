@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+
+// Định nghĩa bảng dữ liệu trong mongoDB
 @Schema({
   timestamps: true,
 })

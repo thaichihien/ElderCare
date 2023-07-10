@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 
 @Injectable()
 export class TutorialService {
+  // Cài model để tương tác với MongoDB
   constructor(
     @InjectModel(Tutorial.name)
     private tutorialModel: mongoose.Model<Tutorial>,
