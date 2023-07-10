@@ -10,6 +10,7 @@ jobs:
     steps:
       - checkout:
           path: ~/eldercare 
+      - node/install-packages 
       - run: find "$PWD"
 workflows:
   build-and-test:
