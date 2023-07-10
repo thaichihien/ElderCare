@@ -9,9 +9,8 @@ jobs:
     steps:
       - checkout:
           path: ~/eldercare  
-      - run: |
-          npm i
-          npm run test
+      - run: npm istall
+      - run: npm run start
 workflows:
   build-and-test:
     jobs:
