@@ -10,6 +10,7 @@ import {
 import { TutorialService } from './tutorial.service';
 import { Tutorial } from './schemas/tutorial.schema';
 import { CreateTutorialDto } from './dto/create-tutorial.dto';
+import { IsObjectId } from 'src/utils/is-object-id.pipe';
 
 @Controller('tutorial')
 export class TutorialController {
@@ -40,7 +41,7 @@ export class TutorialController {
 
   @Get(':id')
   async findTutorialById(
-    @Param('id')
+    @Param('id', IsObjectId)
     id: string,
   ): Promise<Tutorial> {
     return this.tutorialService.findById(id);
