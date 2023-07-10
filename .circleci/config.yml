@@ -1,8 +1,10 @@
 version: 2.1
-orbs:
+executors:
   node:
     docker:
       - image: 'circleci/node:16'
+    shell: /bin/bash
+    resource_class: small
 jobs: 
   test:
     executor:
