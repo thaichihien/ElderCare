@@ -18,7 +18,7 @@ export class CreateTutorialDto {
 
   @ApiProperty({ example: 'Node JS', description: 'Tutorial tag' })
   @IsString()
-  @IsOptional() // thuộc không bắt buộc có, NHƯNG nếu có thì kiểm tra IsString ở trên
+  @IsOptional() // thuộc tính không bắt buộc có, NHƯNG nếu có thì kiểm tra IsString ở trên
   readonly tag: string;
 
   @ApiProperty({ example: 7, description: 'Tutorial view' })

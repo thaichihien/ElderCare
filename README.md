@@ -21,10 +21,16 @@ npm run start:dev
 ```
 server is ready at http://localhost:3000
 ```
-### Kết nối csdl Mongo (cập nhật sau)
+### Kết nối csdl Mongo
+- Sửa file `.env.example` thành `.env`
+- Thêm các biến môi trường do leader chia sẻ
+### Module Mẫu:
+- Tham khảo một module mẫu là **tutorial**, đã có comment chi tiết, đầy đủ ở từng file
+- Module này cung cấp RESTful API cơ bản
 ### Quy tắc
 - **Không sửa** các file như ***main.ts***, ***app.module.ts***, ***app.controller.ts***,... có nhu cầu config thì nói với leader
 - Mỗi người sẽ chỉ làm trên mỗi module (folder) của mình
+- Project đã cấu hình quá trình **CI** (Continuous Integration) với Circle CI
 ## Tham khảo tài liệu :
 - [Nest JS Document](https://docs.nestjs.com/)
 - [Nest JS Basic with MongoDB](https://dev.to/carlomigueldy/building-a-restful-api-with-nestjs-and-mongodb-mongoose-2165)
