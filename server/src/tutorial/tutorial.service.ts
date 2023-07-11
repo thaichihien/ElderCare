@@ -19,9 +19,6 @@ export class TutorialService {
   async findById(id: string): Promise<Tutorial> {
     const tutorial = await this.tutorialModel.findById(id);
 
-    if (!tutorial) {
-      throw new BadRequestException(`tutorial not found with id ${id}`);
-    }
 
     return tutorial;
   }
