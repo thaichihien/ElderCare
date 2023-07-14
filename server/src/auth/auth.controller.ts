@@ -5,7 +5,9 @@ import { AuthDto } from './dto/auth.dto';
 import { Request } from 'express';
 import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refresh-token.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

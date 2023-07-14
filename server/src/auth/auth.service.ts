@@ -9,7 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Admin } from './schemas/admin.schema';
 import mongoose from 'mongoose';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { AuthDto } from './dto/auth.dto';
 
 @Injectable()
@@ -113,6 +113,7 @@ export class AuthService {
   }
 
   async hashPassword(source: string) {
+    
     const salt = await bcrypt.genSalt(10);
     const bcryptPassword = await bcrypt.hash(source, salt);
     return bcryptPassword;

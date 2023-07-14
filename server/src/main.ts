@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { AuthModule } from './auth/auth.module';
+import { TutorialModule } from './tutorial/tutorial.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +14,7 @@ async function bootstrap() {
     .setTitle('Eldercare API')
     .setDescription('The elder care API description')
     .setVersion('1.0')
+    .addTag('Authentication')
     .build();
   const options: SwaggerDocumentOptions =  {
       operationIdFactory: (
