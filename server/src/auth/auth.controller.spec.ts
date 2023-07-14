@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { Admin } from './schemas/admin.schema';
 import { getModelToken } from '@nestjs/mongoose';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { BadRequestException } from '@nestjs/common';
 import { RefreshTokenGuard } from 'src/common/guards/refresh-token.guard';
@@ -37,7 +37,7 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [JwtModule],
+      imports: [JwtModule,ConfigModule.forRoot()],
       providers: [
         ConfigService,
         JwtService,
@@ -55,80 +55,101 @@ describe('AuthController', () => {
     adminModel = module.get<Model<Admin>>(getModelToken(Admin.name));
   });
 
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  // describe('signUp', () => {
-  //   it('should return Bad request when admin account is already exist', async () => {
-  //     jest.spyOn(adminModel, 'findOne').mockResolvedValue(adminTestAccount);
+  describe('signUp', () => {
+    it('should return Bad request when admin account is already exist', async () => {
+      jest.spyOn(adminModel, 'findOne').mockResolvedValue(adminTestAccount);
 
-  //     const authBody: CreateAdminDto = {
-  //       username: 'chihien',
-  //       name: 'Hiện',
-  //       password: '123456',
-  //     };
+      const authBody: CreateAdminDto = {
+        username: 'chihien',
+        name: 'Hiện',
+        password: '123456',
+      };
 
-  //     await expect(controller.signUp(authBody)).rejects.toThrow(
-  //       BadRequestException,
-  //     );
+      await expect(controller.signUp(authBody)).rejects.toThrow(
+        BadRequestException,
+      );
 
-  //     expect(adminModel.findOne).toHaveBeenCalledWith({
-  //       username: authBody.username,
-  //     });
-  //   });
+      expect(adminModel.findOne).toHaveBeenCalledWith({
+        username: authBody.username,
+      });
+    });
 
-  //   it('should return two token when created new admin account succesffully', async () => {
-  //     const authBody: CreateAdminDto = {
-  //       username: 'chihien',
-  //       name: 'Hiện',
-  //       password: '123456',
-  //     };
+    it('should return two token when created new admin account succesffully', async () => {
+      const authBody: CreateAdminDto = {
+        username: 'chihien',
+        name: 'Hiện',
+        password: '123456',
+      };
       
-  //     jest.spyOn(adminModel, 'findOne').mockResolvedValue(null)
-  //     jest.spyOn(adminModel, 'create').mockImplementation(jest.fn().mockResolvedValueOnce( adminTestAccount ))
-  //     jest.spyOn(adminModel, 'findByIdAndUpdate');
+      jest.spyOn(adminModel, 'findOne').mockResolvedValue(null)
+      jest.spyOn(adminModel, 'create').mockImplementation(jest.fn().mockResolvedValueOnce( adminTestAccount ))
+      jest.spyOn(adminModel, 'findByIdAndUpdate');
 
       
 
-  //     const tokens = await controller.signUp(authBody);
+      const tokens = await controller.signUp(authBody);
 
-  //     expect(tokens).toHaveProperty('accessToken', 'refreshToken');
+      expect(tokens).toHaveProperty('accessToken');
+      expect(tokens).toHaveProperty('refreshToken');
 
-  //     expect(adminModel.findOne).toHaveBeenCalledWith({
-  //       username: authBody.username,
-  //     });
-  //     expect(adminModel.findByIdAndUpdate).toHaveBeenCalled();
-  //   });
-  // });
+      expect(adminModel.findOne).toHaveBeenCalledWith({
+        username: authBody.username,
+      });
+      expect(adminModel.findByIdAndUpdate).toHaveBeenCalled();
+    });
+  });
 
-  // describe('signIn', () => {
-  //   //it('should return Bad Request when admin with username does not exist');
+  describe('signIn', () => {
+    //it('should return Bad Request when admin with username does not exist');
 
-  //   //it('should return Bad request when the password is wrong');
+    it('should return Bad request when the password is wrong',async () => {
+      jest.spyOn(adminModel, 'findOne').mockResolvedValue(adminTestAccount);
 
-  //   it('should return two token when created sign in succesffully', async () => {
-  //     jest.spyOn(adminModel, 'findOne').mockResolvedValue(adminTestAccount);
-  //     jest.spyOn(adminModel, 'findByIdAndUpdate');
+      const authBody: AuthDto = {
+        username: 'chihien',
+        password: 'abcde',
+      };
 
-  //     const authBody: AuthDto = {
-  //       username: 'chihien',
-  //       password: '123456',
-  //     };
+      await expect(controller.signIn(authBody)).rejects.toThrow(BadRequestException)
 
-  //     const tokens = await controller.signIn(authBody);
+      expect(adminModel.findOne).toHaveBeenCalledWith({
+        username: authBody.username,
+      });
+    })
 
-  //     expect(tokens).toHaveProperty('accessToken', 'refreshToken');
+    it('should return two token when created sign in succesffully', async () => {
+      jest.spyOn(adminModel, 'findOne').mockResolvedValue(adminTestAccount);
+      jest.spyOn(adminModel, 'findByIdAndUpdate');
 
-  //     expect(adminModel.findOne).toHaveBeenCalledWith({
-  //       username: authBody.username,
-  //     });
-  //     expect(adminModel.findByIdAndUpdate).toHaveBeenCalled();
-  //   });
-  // });
+      const authBody: AuthDto = {
+        username: 'chihien',
+        password: '123456',
+      };
+
+      const tokens = await controller.signIn(authBody);
+
+      expect(tokens).toHaveProperty('accessToken');
+      expect(tokens).toHaveProperty('refreshToken');
+
+      expect(adminModel.findOne).toHaveBeenCalledWith({
+        username: authBody.username,
+      });
+      expect(adminModel.findByIdAndUpdate).toHaveBeenCalled();
+    });
+  });
 
   // describe('logOut', () => {
-  //   it('should return Unauthorized when no access token in header');
+  //   it('should return Unauthorized when no access token in header',async () => {
+      
+  //   });
 
   //   it('return should successfully status when log out admin account');
   // });

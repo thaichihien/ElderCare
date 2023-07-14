@@ -76,7 +76,7 @@ export class AuthService {
   }
 
   async logOut(id: string) {
-    this.adminModel.findByIdAndUpdate(id, {
+    await this.adminModel.findByIdAndUpdate(id, {
       refresh_token: null,
     });
   }
@@ -107,7 +107,7 @@ export class AuthService {
 
   async updateRefreshToken(id: string, refreshToken: string) {
     const hashRefreshToken = await this.hashPassword(refreshToken);
-    this.adminModel.findByIdAndUpdate(id, {
+    await this.adminModel.findByIdAndUpdate(id, {
       refresh_token: hashRefreshToken,
     });
   }
