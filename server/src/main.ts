@@ -2,8 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
-import { TutorialModule } from './tutorial/tutorial.module';
+
+
+
+const PORT = process.env.PORT || 3000
+const host = '0.0.0.0' 
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,7 +30,7 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, document);
 
 
-  await app.listen(3000);
+  await app.listen(PORT,host);
   console.log("server is ready at http://localhost:3000")
 }
 bootstrap();
