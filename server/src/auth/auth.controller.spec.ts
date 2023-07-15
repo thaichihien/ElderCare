@@ -8,10 +8,6 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { BadRequestException } from '@nestjs/common';
-import { RefreshTokenGuard } from 'src/common/guards/refresh-token.guard';
-import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
-import { AccessTokenStratery } from './strategies/access-token.stratery';
-import { RefreshTokenStratery } from './strategies/refresh-token.stratery';
 import { AuthDto } from './dto/auth.dto';
 
 describe('AuthController', () => {
