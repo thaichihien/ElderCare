@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectModel } from '@nestjs/mongoose';
 import { Tutorial } from './schemas/tutorial.schema';
 import mongoose from 'mongoose';
+import { CreateTutorialDto } from './dto/create-tutorial.dto';
 
 @Injectable()
 export class TutorialService {
@@ -43,7 +44,7 @@ export class TutorialService {
     return tutorial;
   }
 
-  async create(tutorial: Tutorial): Promise<Tutorial> {
+  async create(tutorial: CreateTutorialDto): Promise<Tutorial> {
     const created = await this.tutorialModel.create(tutorial);
     return created;
   }
