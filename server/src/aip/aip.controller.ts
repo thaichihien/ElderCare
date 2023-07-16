@@ -42,7 +42,7 @@ export class AipController {
         return this.aipService.findAll();
     }
 
-    @Get(':CCCD')
+    @Get('/CCCD/:CCCD')
     async findByCCCD(
         @Param('CCCD')
         CCCD: string

@@ -21,7 +21,7 @@ export class AipService {
         const aip = await this.aipModel.findById(id);
 
         if (!aip) {
-            throw new NotFoundException(`tutorial not found with id ${id}`);
+            throw new NotFoundException(`aip not found with id ${id}`);
         }
 
         return aip;
