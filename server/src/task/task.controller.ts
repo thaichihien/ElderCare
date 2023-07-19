@@ -6,14 +6,17 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { IsObjectId } from '../utils/is-object-id.pipe';
 import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
-@ApiTags("Task")
+@ApiTags('Task')
 @Controller('task')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
@@ -31,6 +34,16 @@ export class TaskController {
   @Get('/guardian/:id')
   findByGuardianId(@Param('id', IsObjectId) id: string) {
     return this.taskService.findByGuardianId(id);
+  }
+
+  @Post('/upload/:id/task/:taskid')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: string,
+    @Param('taskid') taskId: string,
+  ) {
+    return this.taskService.uploadImage(taskId, file);
   }
 
   @Get(':id')

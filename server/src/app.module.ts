@@ -8,6 +8,9 @@ import { GuardianModule } from './guardian/guardian.module';
 import { AipModule } from './aip/aip.module';
 import { AuthModule } from './auth/auth.module';
 import { TaskModule } from './task/task.module';
+import { ImageService } from './image/image.service';
+import { ImageModule } from './image/image.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -20,6 +23,7 @@ import { TaskModule } from './task/task.module';
     GuardianModule,
     AipModule,
     AuthModule,
+    ImageModule,
     TaskModule,
   ],
   controllers: [AppController],
