@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GuardianModule } from './guardian/guardian.module';
 import { AipModule } from './aip/aip.module';
 import { AuthModule } from './auth/auth.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
     GuardianModule,
     AipModule,
     AuthModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],

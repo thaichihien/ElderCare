@@ -14,7 +14,9 @@ import { isStringObject } from 'util/types';
 import { CreateGuardianDto } from './dto/create-guardian.dto';
 import { GuardianService } from './guardian.service';
 import { Guardian } from './schemas/guardian.schema';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Guardian')
 @Controller('guardian')
 export class GuardianController {
   constructor(private guardianService: GuardianService) {}
