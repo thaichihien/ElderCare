@@ -28,6 +28,9 @@ export class Task {
 
   @Prop({ type: MongooseScema.Types.ObjectId, ref: 'Aip' })
   aip: Aip;
+
+  
+  
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

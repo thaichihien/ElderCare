@@ -1,26 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Task } from './schemas/task.schema';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class TaskService {
-  create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
+  constructor(
+    @InjectModel(Task.name)
+    private taskModel: mongoose.Model<Task>,
+  ) {}
+
+  async create(createTaskDto: CreateTaskDto) {
+    let gid = createTaskDto.guardian;
+    let aid = createTaskDto.aip;
+
+    if (!mongoose.Types.ObjectId.isValid(gid)) {
+      throw new BadRequestException('Invalid guardian id');
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(aid)) {
+      throw new BadRequestException('Invalid aip id');
+    }
+
+    createTaskDto.guardian = new mongoose.Types.ObjectId(gid);
+    createTaskDto.aip = new mongoose.Types.ObjectId(aid);
+
+    const newTask = await this.taskModel.create(createTaskDto);
+    return newTask;
   }
 
-  findAll() {
-    return `This action returns all task`;
+  async findAll() {
+    const tasks = await this.taskModel.find();
+    return tasks;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findByGuardianId(id: string) {
+    const guardianTasks = await this.taskModel
+      .find()
+      .where('guardian')
+      .equals(id);
+
+    return guardianTasks;
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async findOne(id: string) {
+    const task = await this.taskModel.findById(id);
+
+    return task;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
+    const updated = await this.taskModel.findByIdAndUpdate(id, updateTaskDto, {
+      new: true,
+    });
+
+    return updated;
+  }
+
+  async remove(id: string) {
+    return this.taskModel.findByIdAndDelete(id);
   }
 }
