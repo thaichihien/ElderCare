@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Aip } from './schemas/aip.schema';
 import mongoose from 'mongoose';
@@ -53,4 +53,28 @@ export class AipService {
     async delete(id: string): Promise<void> {
         await this.aipModel.findByIdAndDelete(id)
     }
+
+    async assignGuardian(aipId: string,guardianId : string,){
+
+       const guardianObjectId = new mongoose.Types.ObjectId(guardianId)
+        
+        const updated = await this.aipModel.findByIdAndUpdate(aipId,{
+            guardian : guardianObjectId
+        },{new :true})
+
+        console.log(updated)
+
+        return updated
+    }
+
+    async unassignGuardian(aipId: string){
+         
+         const updated = await this.aipModel.findByIdAndUpdate(aipId,{
+             guardian : null
+         },{new : true})
+ 
+         return updated
+     }
+
+
 }
