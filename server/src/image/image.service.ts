@@ -91,7 +91,7 @@ export class ImageService {
     //console.log(ggData)
 
     console.log(ggData)
-    if(ggData.results.length < 0){
+    if(ggData.results.length <= 0){
       return ""
     }
 
