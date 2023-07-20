@@ -35,7 +35,7 @@ export class TaskService {
   }
 
   async findAll() {
-    const tasks = await this.taskModel.find();
+    const tasks = await this.taskModel.find().populate('image');
     return tasks;
   }
 
@@ -43,7 +43,7 @@ export class TaskService {
     const guardianTasks = await this.taskModel
       .find()
       .where('guardian')
-      .equals(id);
+      .equals(id).populate('image');
 
     return guardianTasks;
   }
@@ -119,7 +119,7 @@ export class TaskService {
 
     const image = await this.imageSerive.saveImageToDatabase(imageDto)
 
-    this.taskModel.findByIdAndUpdate(id,{
+    await this.taskModel.findByIdAndUpdate(id,{
       isDone : true,
       image : image._id
     })
