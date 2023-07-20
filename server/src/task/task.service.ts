@@ -79,11 +79,11 @@ export class TaskService {
 
     const exifData = await this.imageSerive.getExifData(file);
 
-    console.log(exifData);
+    //console.log(exifData);
 
     // - upload image to cloud
 
-    //const imageUrl = await this.imageSerive.saveImageToCloud(file);
+    const imageUrl = await this.imageSerive.saveImageToCloud(file);
 
     const lat = this.imageSerive.convertDMSToDD(
       exifData.gps.GPSLatitude,
@@ -94,29 +94,34 @@ export class TaskService {
       exifData.gps.GPSLongitudeRef,
     );
 
-    console.log('lat : ' + lat);
-    console.log('long : ' + long);
+    // console.log('lat : ' + lat);
+    // console.log('long : ' + long);
 
     const dateString = this.convertTimestamp(exifData.exif.CreateDate)
 
-    const date = new Date(dateString)
+    //const date = new Date(dateString)
 
-    console.log(date.toISOString())
+    //console.log(date.toISOString())
 
-    //const address = await this.imageSerive.getAddressStringFrom(lat, long);
+    const address = await this.imageSerive.getAddressStringFrom(lat, long);
 
     //console.log('address : ' + address)
       
     // - save to database
-    // const imageDto: CreateImageDto = {
-    //   link: imageUrl,
-    //   latitude: lat,
-    //   longitude: long,
-    //   address: '',
-    //   time: new Date(),
-    //   task: id,
-    // };
+    const imageDto: CreateImageDto = {
+      link: imageUrl,
+      latitude: lat,
+      longitude: long,
+      address: address,
+      time: new Date(dateString),
+      task: id,
+    };
 
-    //const image = await this.imageSerive.saveImageToDatabase(imageDto)
+    const image = await this.imageSerive.saveImageToDatabase(imageDto)
+
+    this.taskModel.findByIdAndUpdate(id,{
+      isDone : true,
+      image : image._id
+    })
   }
 }

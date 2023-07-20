@@ -86,11 +86,11 @@ export class ImageService {
         ),
     );
 
-    console.log(ggData)
-
     //console.log(ggData)
 
-    return ggData.results.formatted_address
+    console.log(ggData)
+
+    return ggData.results[0].formatted_address
   }
 
 

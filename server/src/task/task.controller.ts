@@ -36,14 +36,13 @@ export class TaskController {
     return this.taskService.findByGuardianId(id);
   }
 
-  @Post('/upload/:id/task/:taskid')
+  @Post('/upload/:id')
   @UseInterceptors(FileInterceptor('file'))
   uploadImage(
     @UploadedFile() file: Express.Multer.File,
-    @Param('id') id: string,
-    @Param('taskid') taskId: string,
+    @Param('id') id: string
   ) {
-    return this.taskService.uploadImage(taskId, file);
+    return this.taskService.uploadImage(id, file);
   }
 
   @Get(':id')
