@@ -17,6 +17,8 @@ export class ImageService {
     private imageModel: mongoose.Model<TaskImage>,
     private readonly httpService: HttpService) {}
 
+  
+
   async getExifData(file: Express.Multer.File): Promise<Exif.ExifData> {
     return new Promise((resolve, reject) => {
       try {
@@ -89,6 +91,9 @@ export class ImageService {
     //console.log(ggData)
 
     console.log(ggData)
+    if(ggData.results.length < 0){
+      return ""
+    }
 
     return ggData.results[0].formatted_address
   }
