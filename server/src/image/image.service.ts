@@ -43,7 +43,7 @@ export class ImageService {
     const { data: imageData } = await firstValueFrom(
       this.httpService
         .post(
-          `https://api.imgbb.com/1/upload?expiration=600&key=${process.env.IMAGE_KEY}`,
+          `https://api.imgbb.com/1/upload?key=${process.env.IMAGE_KEY}`,
           formData,
         )
         .pipe(
