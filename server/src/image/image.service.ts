@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { AxiosError } from 'axios';
 import Exif, { ExifImage } from 'exif';
@@ -24,14 +24,16 @@ export class ImageService {
       try {
         new ExifImage(file.buffer, async (error, edata: Exif.ExifData) => {
           if (error) {
-            console.log('getDataAndSaveFile ' + error);
+            console.log('getExifData ' + error);
+            throw new BadRequestException(error)
             reject(error);
           }
           console.log(edata);
           resolve(edata);
         });
       } catch (error) {
-        reject(error);
+        console.log('getExifData ' + error )
+        throw new BadRequestException(error);
       }
     });
   }
@@ -48,7 +50,7 @@ export class ImageService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw error;
+            throw new InternalServerErrorException("save image to cloud server error : " + error);
           }),
         ),
     );
@@ -83,7 +85,7 @@ export class ImageService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw error;
+            throw new InternalServerErrorException("get address server error : " + error);
           }),
         ),
     );
