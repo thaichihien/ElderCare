@@ -45,7 +45,7 @@ export class AipService {
     }
 
     async update(id: string, aip: AipDto): Promise<Aip> {
-        const updated = await this.aipModel.findByIdAndUpdate(id, aip, {new: true})
+        const updated = await this.aipModel.findByIdAndUpdate(id, aip, { new: true })
 
         return updated
     }
@@ -54,27 +54,27 @@ export class AipService {
         await this.aipModel.findByIdAndDelete(id)
     }
 
-    async assignGuardian(aipId: string,guardianId : string,){
+    async assignGuardian(aipId: string, guardianId: string,) {
 
-       const guardianObjectId = new mongoose.Types.ObjectId(guardianId)
-        
-        const updated = await this.aipModel.findByIdAndUpdate(aipId,{
-            guardian : guardianObjectId
-        },{new :true})
+        const guardianObjectId = new mongoose.Types.ObjectId(guardianId)
+
+        const updated = await this.aipModel.findByIdAndUpdate(aipId, {
+            guardian: guardianObjectId
+        }, { new: true })
 
         console.log(updated)
 
         return updated
     }
 
-    async unassignGuardian(aipId: string){
-         
-         const updated = await this.aipModel.findByIdAndUpdate(aipId,{
-             guardian : null
-         },{new : true})
- 
-         return updated
-     }
+    async unassignGuardian(aipId: string) {
+
+        const updated = await this.aipModel.findByIdAndUpdate(aipId, {
+            guardian: null
+        }, { new: true })
+
+        return updated
+    }
 
 
 }
