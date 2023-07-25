@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Aip } from './schemas/aip.schema';
 import mongoose from 'mongoose';
 import { AipDto } from './dto/aip.dto';
+import { AipHealthStatusDto } from './dto/aip-healthStatus.dto';
 
 @Injectable()
 export class AipService {
@@ -76,5 +77,18 @@ export class AipService {
         return updated
     }
 
+    async updateHealthStatus(apiId: string, aipHealthStatus: AipHealthStatusDto): Promise<Aip> {
 
+        const aip = await this.aipModel.findById(apiId);
+
+        if (!aip) {
+            throw new NotFoundException(`aip not found with id ${apiId}`);
+        }
+
+        aip.healthStatus = aipHealthStatus.healthStatus;
+
+        const updated = await this.aipModel.findByIdAndUpdate(apiId, aip, { new: true })
+
+        return updated
+    }
 }
