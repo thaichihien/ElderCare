@@ -15,6 +15,7 @@ import { Aip } from './schemas/aip.schema';
 import { IsObjectId } from '../utils/is-object-id.pipe';
 import { AipAssignDto } from './dto/aip-assign.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { AipHealthStatusDto } from './dto/aip-healthStatus.dto';
 
 @ApiTags('Aip')
 @Controller('aip')
@@ -67,6 +68,14 @@ export class AipController {
   async update(@Param('id') id: string, @Body() aip: AipDto): Promise<Aip> {
     return this.aipService.update(id, aip);
   }
+
+  @Put('health-status/:id')
+  async updateHealthStatus(
+    @Param('id') id: string,
+    @Body() aip: AipHealthStatusDto
+  ): Promise<Aip> {
+    return this.aipService.updateHealthStatus(id, aip);
+  } 
 
   @Delete(':id')
   async delete(
