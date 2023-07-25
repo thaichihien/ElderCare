@@ -3,7 +3,7 @@ import { GuardianController } from './guardian.controller';
 import { GuardianService } from './guardian.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Guardian, GuardianSchema } from './schemas/guardian.schema';
-import { Qualification, QualificationSchema } from './schemas/qualification.schema';
+import { Qualification, QualificationSchema } from './schemas/certification.schema';
 
 @Module({
   imports: [
