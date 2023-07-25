@@ -36,4 +36,8 @@ export class AipDto {
     @ApiProperty({ example: 'Hay quên', description: 'HealthStatus' })
     @IsString()
     readonly healthStatus: string;
+
+    @ApiProperty({ example: 'Cần chăm sóc thường xuyên', description: 'Note' })
+    @IsString()
+    readonly note: string;
 }

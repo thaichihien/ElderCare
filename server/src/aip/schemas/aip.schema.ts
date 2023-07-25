@@ -21,6 +21,8 @@ export class Aip {
     address: string;
     @Prop()
     healthStatus: string;
+    @Prop()
+    note: string;
 
     @Prop({ type: MongooseScema.Types.ObjectId, ref: 'Guardian' })
     guardian: Guardian;
