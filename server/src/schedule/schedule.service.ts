@@ -1,26 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { Schedule } from './schemas/schedule.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Schedule')
 @Injectable()
 export class ScheduleService {
-  create(createScheduleDto: CreateScheduleDto) {
-    return 'This action adds a new schedule';
+  constructor(
+    @InjectModel(Schedule.name)
+    private scheduleModel: mongoose.Model<Schedule>,
+  ) {}
+
+  async create(createScheduleDto: CreateScheduleDto) {
+
+    // ! Check if id is valid
+
+    const created = await this.scheduleModel.create(createScheduleDto);
+    return created;
   }
 
-  findAll() {
-    return `This action returns all schedule`;
+  async findAll() {
+    const all = await this.scheduleModel.find();
+    return all;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} schedule`;
+  async findOne(id: string) {
+    const one = await this.scheduleModel.findById(id);
+    return one;
   }
 
-  update(id: number, updateScheduleDto: UpdateScheduleDto) {
-    return `This action updates a #${id} schedule`;
+  async findScheduleOfGuardian(id: string) {
+    const schedules = await this.scheduleModel.find().where('guardian').equals(id)
+    return schedules;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} schedule`;
+
+  async update(id: string, updateScheduleDto: UpdateScheduleDto) {
+    const updated = await this.scheduleModel.findByIdAndUpdate(
+      id,
+      updateScheduleDto,
+      {
+        new: true,
+      },
+    );
+    return updated;
+  }
+
+  async remove(id: string) {
+    return await this.scheduleModel.findByIdAndDelete(id);
   }
 }
