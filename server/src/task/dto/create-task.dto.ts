@@ -18,17 +18,20 @@ export class CreateTaskDto {
   @IsBoolean() 
   readonly isDone: boolean = false;
 
-  @ApiProperty({ example:new Date().toISOString(), description: 'time to start do the work' })
-  @IsNotEmpty() 
-  @Type(() => Date)
-  @IsDate() 
-  readonly startTime: Date;
 
-  @ApiProperty({ example: new Date().toISOString(), description: 'time the work should end' })
-  @IsNotEmpty() 
-  @Type(() => Date)
-  @IsDate() 
-  readonly endTime: Date;
+  @ApiProperty({ example: false, description: 'this can be true when schedule this task belong have isCylce = true, otherwise will be rejected. If it is true meaning this task is repeated everyweek' })
+  @IsOptional() 
+  @IsBoolean() 
+  readonly isCycle: boolean = false;
+
+
+  // @ApiProperty({ example: new Date().toISOString(), description: 'time the work should end' })
+  // @IsNotEmpty() 
+  // @Type(() => Date)
+  // @IsDate() 
+  // readonly endTime: Date;
+
+  deadline: Date
 
   @ApiProperty({ example: "", description: 'guardian id' })
   @IsNotEmpty() 
@@ -39,4 +42,10 @@ export class CreateTaskDto {
   @IsNotEmpty() 
   @IsString() 
   aip: any;
+
+  @ApiProperty({example: "", description: 'schedule id' })
+  @IsNotEmpty() 
+  @IsString() 
+  schedule: any;
+
 }

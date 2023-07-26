@@ -3,13 +3,13 @@ import { GuardianController } from './guardian.controller';
 import { GuardianService } from './guardian.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Guardian, GuardianSchema } from './schemas/guardian.schema';
-import { Qualification, QualificationSchema } from './schemas/certification.schema';
+import { Certification, CertificationSchema } from './schemas/certification.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Guardian.name, schema: GuardianSchema },
-      { name: Qualification.name, schema: QualificationSchema }
+      { name: Certification.name, schema: CertificationSchema }
     ]),
   ],
   controllers: [GuardianController],
