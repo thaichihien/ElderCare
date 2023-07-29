@@ -22,6 +22,12 @@ export class ScheduleController {
     return this.scheduleService.findAll();
   }
 
+  @ApiOperation({ summary: "Get all available schedule from all guardian (startTime >= current date or isCycle == true)" })
+  @Get()
+  findAllAvailable() {
+    return this.scheduleService.findAllAvailable();
+  }
+
   @ApiOperation({ summary: "Find schedule with id" })
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -46,4 +52,7 @@ export class ScheduleController {
   remove(@Param('id') id: string) {
     return this.scheduleService.remove(id);
   }
+
+  
+
 }

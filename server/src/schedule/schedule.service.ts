@@ -27,6 +27,18 @@ export class ScheduleService {
     return all;
   }
 
+  async findAllAvailable() {
+    const all = await this.scheduleModel.find().or([
+      {
+        startTime : { $gte : new Date()}
+      },
+      {
+        isCycle : true
+      }
+    ]);
+    return all;
+  }
+
   async findOne(id: string) {
     const one = await this.scheduleModel.findById(id);
     return one;

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Date, Schema as MongooseScema } from 'mongoose';
+import { Schema as MongooseScema } from 'mongoose';
 import { Guardian } from '../../guardian/schemas/guardian.schema';
 
 @Schema({
