@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Certification, CertificationSchema } from './certification.schema';
 import { Experience, ExperienceSchema } from './experience.schema';
+import { Schema as MongooseSchema } from 'mongoose';
 
 enum Level {
   Amateur,
@@ -28,10 +29,10 @@ export class Guardian {
   @Prop({ type: String, enum: Level, default: Level.Amateur })
   level: Level;
 
-  @Prop({ type: [CertificationSchema] })
+  @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'Certification' })
   certifications: Certification[];
 
-  @Prop({ type: [ExperienceSchema] })
+  @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'Experience' })
   experiences: Experience[];
 }
 

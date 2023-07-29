@@ -9,13 +9,17 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { IsObjectId } from 'src/utils/is-object-id.pipe';
 import { isStringObject } from 'util/types';
 import { CreateGuardianDto } from './dto/create-guardian.dto';
 import { GuardianService } from './guardian.service';
 import { Guardian } from './schemas/guardian.schema';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreateCertificationDto } from './dto/create-certification.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Guardian')
 @Controller('guardian')
@@ -72,5 +76,25 @@ export class GuardianController {
     @Query('level') level: string,
   ): Promise<Guardian> {
     return this.guardianService.updateLevel(id, level);
+  }
+
+  @ApiOperation({ summary: 'Upload certification image' })
+  @Post('/certification/upload/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadCertificationImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: string,
+  ) {
+    return this.guardianService.uploadCertificationImage(file, id);
+  }
+
+  @ApiOperation({ summary: 'upload certification from guardian' })
+  @Post('certification/:id')
+  async createCertification(
+    @Param('id')
+    id: string,
+    @Body() cerDto: CreateCertificationDto,
+  ) {
+    return this.guardianService.createCertification(cerDto, id);
   }
 }

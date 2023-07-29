@@ -8,6 +8,7 @@ import {
   Certification,
   CertificationSchema,
 } from './schemas/certification.schema';
+import { ImageModule } from 'src/image/image.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import {
       { name: Experience.name, schema: ExperienceSchema },
       { name: Certification.name, schema: CertificationSchema },
     ]),
+    ImageModule,
   ],
   controllers: [GuardianController],
   providers: [GuardianService],
