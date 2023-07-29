@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Date, Schema as MongooseSchema } from 'mongoose';
-import { Image } from 'src/image/schemas/image.schema';
-import { Aip } from '../../aip/schemas/aip.schema';
+import { Schema as MongooseSchema } from 'mongoose';
 import { Guardian } from '../../guardian/schemas/guardian.schema';
+import { Aip } from '../../aip/schemas/aip.schema';
+import { Image } from '../../image/schemas/image.schema';
+import { Schedule } from '../../schedule/schemas/schedule.schema';
 
 @Schema({
   timestamps: true,
@@ -17,11 +18,14 @@ export class Task {
   @Prop()
   isDone: boolean;
 
-  @Prop({ type: Date })
-  startTime: Date;
+  // @Prop({type : Date})
+  // startTime: Date
 
-  @Prop({ type: Date })
-  endTime: Date;
+  @Prop({type :Date})
+  deadline: Date;
+
+  @Prop()
+  isCycle : boolean;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Guardian' })
   guardian: Guardian;
@@ -29,8 +33,12 @@ export class Task {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Aip' })
   aip: Aip;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'TaskImage' })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Schedule' })
+  schedule: Schedule;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Image' })
   image: Image;
 }
+
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

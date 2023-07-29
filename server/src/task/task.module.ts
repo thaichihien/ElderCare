@@ -4,11 +4,15 @@ import { TaskController } from './task.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Task, TaskSchema } from './schemas/task.schema';
 import { ImageModule } from 'src/image/image.module';
+import { ScheduleModule } from 'src/schedule/schedule.module';
+import { Schedule, ScheduleSchema } from 'src/schedule/schemas/schedule.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
+    MongooseModule.forFeature([{ name: Schedule.name, schema: ScheduleSchema }]),
     ImageModule,
+    //ScheduleModule
   ],
   controllers: [TaskController],
   providers: [TaskService],
