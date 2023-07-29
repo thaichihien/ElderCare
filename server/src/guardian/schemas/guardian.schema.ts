@@ -29,7 +29,7 @@ export class Guardian {
   level: Level;
 
   @Prop({ type: [CertificationSchema] })
-  qualifications: Certification[];
+  certifications: Certification[];
 
   @Prop({ type: [ExperienceSchema] })
   experiences: Experience[];

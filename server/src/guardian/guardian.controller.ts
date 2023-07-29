@@ -1,13 +1,14 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    NotFoundException,
-    Param,
-    Post,
-    Put,
-    Query,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
 } from '@nestjs/common';
 import { IsObjectId } from 'src/utils/is-object-id.pipe';
 import { isStringObject } from 'util/types';
@@ -63,5 +64,13 @@ export class GuardianController {
     id: string,
   ): Promise<void> {
     return this.guardianService.delete(id);
+  }
+
+  @Patch(':id?')
+  async updateLevel(
+    @Param('id') id: string,
+    @Query('level') level: string,
+  ): Promise<Guardian> {
+    return this.guardianService.updateLevel(id, level);
   }
 }
