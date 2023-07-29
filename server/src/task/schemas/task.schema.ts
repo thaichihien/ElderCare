@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Schema as MongooseScema } from 'mongoose';
+import { Schema as MongooseSchema } from 'mongoose';
 import { Guardian } from '../../guardian/schemas/guardian.schema';
 import { Aip } from '../../aip/schemas/aip.schema';
-import { TaskImage } from '../../image/schemas/image.schemas';
+import { Image } from '../../image/schemas/image.schema';
 import { Schedule } from '../../schedule/schemas/schedule.schema';
 
 @Schema({
@@ -22,25 +22,22 @@ export class Task {
   // startTime: Date
 
   @Prop({type :Date})
-  deadline: Date
+  deadline: Date;
 
   @Prop()
   isCycle : boolean;
 
-  @Prop({ type: MongooseScema.Types.ObjectId, ref: 'Guardian' })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Guardian' })
   guardian: Guardian;
 
-  @Prop({ type: MongooseScema.Types.ObjectId, ref: 'Aip' })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Aip' })
   aip: Aip;
 
-  @Prop({type : MongooseScema.Types.ObjectId,ref :'Schedule'})
-  schedule : Schedule
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Schedule' })
+  schedule: Schedule;
 
-  @Prop({ type: MongooseScema.Types.ObjectId, ref: 'TaskImage' })
-  image: TaskImage;
-  
-
-  
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Image' })
+  image: Image;
 }
 
 

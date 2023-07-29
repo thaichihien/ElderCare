@@ -6,18 +6,17 @@ import Exif, { ExifImage } from 'exif';
 import mongoose from 'mongoose';
 import { catchError, firstValueFrom } from 'rxjs';
 
+import * as FormData from 'form-data';
 import { CreateImageDto } from './dto/create-image.dto';
-import { TaskImage } from './schemas/image.schemas';
-import * as FormData from 'form-data'
+import { Image } from './schemas/image.schema';
 
 @Injectable()
 export class ImageService {
   constructor(
-    @InjectModel(TaskImage.name)
-    private imageModel: mongoose.Model<TaskImage>,
-    private readonly httpService: HttpService) {}
-
-  
+    @InjectModel(Image.name)
+    private imageModel: mongoose.Model<Image>,
+    private readonly httpService: HttpService,
+  ) {}
 
   async getExifData(file: Express.Multer.File): Promise<Exif.ExifData> {
     return new Promise((resolve, reject) => {
@@ -32,14 +31,14 @@ export class ImageService {
           resolve(edata);
         });
       } catch (error) {
-        console.log('getExifData ' + error )
+        console.log('getExifData ' + error)
         throw new BadRequestException(error);
       }
     });
   }
 
   async saveImageToCloud(file: Express.Multer.File) {
-    
+
     const formData = new FormData();
     formData.append('image', file.buffer.toString('base64'));
     const { data: imageData } = await firstValueFrom(
@@ -58,18 +57,18 @@ export class ImageService {
     return imageData.data.url;
   }
 
-  async saveImageToDatabase(createImageDto : CreateImageDto){
-     const img = await this.imageModel.create(createImageDto)
+  async saveImageToDatabase(createImageDto: CreateImageDto) {
+    const img = await this.imageModel.create(createImageDto)
 
     return img
   }
 
-  convertDMSToDD(dms : number[], direction : string) : number {
+  convertDMSToDD(dms: number[], direction: string): number {
     const degrees = dms[0]
     const minutes = dms[1]
     const seconds = dms[2]
 
-    var dd = degrees + minutes / 60 + seconds / (60 * 60);
+    let dd = degrees + minutes / 60 + seconds / (60 * 60);
 
     if (direction == 'S' || direction == 'W') {
       dd = dd * -1;
@@ -77,7 +76,7 @@ export class ImageService {
     return dd;
   }
 
-  async getAddressStringFrom(latitude : number,longitude: number){
+  async getAddressStringFrom(latitude: number, longitude: number) {
     const { data: ggData } = await firstValueFrom(
       this.httpService
         .get(
@@ -85,7 +84,9 @@ export class ImageService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new InternalServerErrorException("get address server error : " + error);
+            throw new InternalServerErrorException(
+              'get address server error : ' + error,
+            );
           }),
         ),
     );
@@ -93,12 +94,10 @@ export class ImageService {
     //console.log(ggData)
 
     console.log(ggData)
-    if(ggData.results.length <= 0){
-      return ""
+    if (ggData.results.length <= 0) {
+      return '';
     }
 
-    return ggData.results[0].formatted_address
+    return ggData.results[0].formatted_address;
   }
-
-
 }
