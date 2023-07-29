@@ -1,18 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Guardian } from './schemas/guardian.schema';
 import mongoose from 'mongoose';
 import { CreateGuardianDto } from './dto/create-guardian.dto';
+import { Certification } from './schemas/certification.schema';
+import { CreateCertificationDto } from './dto/create-certification.dto';
+import { ImageService } from 'src/image/image.service';
 
 @Injectable()
 export class GuardianService {
   constructor(
     @InjectModel(Guardian.name)
     private GuardianModel: mongoose.Model<Guardian>,
+    @InjectModel(Certification.name)
+    private certificationModel: mongoose.Model<Certification>,
+    private imageSerive: ImageService,
   ) {}
 
   async findAll(): Promise<Guardian[]> {
-    const guardians = await this.GuardianModel.find();
+    const guardians = await this.GuardianModel.find().populate('certifications');
     return guardians;
   }
 
@@ -57,6 +63,41 @@ export class GuardianService {
     const updated = await this.GuardianModel.findByIdAndUpdate(id, {
       level: level,
     });
+
+    return updated;
+  }
+
+  async createCertification(
+    cerDto: CreateCertificationDto,
+    guardianId: string,
+  ) {
+    const created = await this.certificationModel.create(cerDto);
+
+    await this.GuardianModel.findByIdAndUpdate(guardianId, {
+      $push: {
+        certifications: created._id,
+      },
+    });
+
+    return created;
+  }
+
+  async uploadCertificationImage(file: Express.Multer.File, id: string) {
+    const imageUrl = await this.imageSerive.saveImageToCloud(file);
+
+    const updated = await this.certificationModel.findByIdAndUpdate(
+      id,
+      {
+        image: imageUrl,
+      },
+      {
+        new: true,
+      },
+    );
+
+    if(!updated){
+      throw new BadRequestException('id not found')
+    }
 
     return updated;
   }
