@@ -1,5 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { AxiosError } from 'axios';
 import Exif, { ExifImage } from 'exif';
@@ -58,15 +62,15 @@ export class ImageService {
   }
 
   async saveImageToDatabase(createImageDto: CreateImageDto) {
-    const img = await this.imageModel.create(createImageDto)
+    const img = await this.imageModel.create(createImageDto);
 
-    return img
+    return img;
   }
 
   convertDMSToDD(dms: number[], direction: string): number {
-    const degrees = dms[0]
-    const minutes = dms[1]
-    const seconds = dms[2]
+    const degrees = dms[0];
+    const minutes = dms[1];
+    const seconds = dms[2];
 
     let dd = degrees + minutes / 60 + seconds / (60 * 60);
 
@@ -93,7 +97,7 @@ export class ImageService {
 
     //console.log(ggData)
 
-    console.log(ggData)
+    console.log(ggData);
     if (ggData.results.length <= 0) {
       return '';
     }

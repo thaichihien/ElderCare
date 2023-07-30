@@ -3,11 +3,14 @@ import { GuardianController } from './guardian.controller';
 import { GuardianService } from './guardian.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Guardian, GuardianSchema } from './schemas/guardian.schema';
-import { Experience, ExperienceSchema } from './schemas/experience.schema';
 import {
-  Certification,
-  CertificationSchema,
-} from './schemas/certification.schema';
+  Experience,
+  ExperienceSchema,
+} from '../experience/schemas/experience.schema';
+import {
+  Certificate,
+  CertificateSchema,
+} from '../certificate/schemas/certificate.schema';
 import { ImageModule } from 'src/image/image.module';
 
 @Module({
@@ -15,7 +18,7 @@ import { ImageModule } from 'src/image/image.module';
     MongooseModule.forFeature([
       { name: Guardian.name, schema: GuardianSchema },
       { name: Experience.name, schema: ExperienceSchema },
-      { name: Certification.name, schema: CertificationSchema },
+      { name: Certificate.name, schema: CertificateSchema },
     ]),
     ImageModule,
   ],

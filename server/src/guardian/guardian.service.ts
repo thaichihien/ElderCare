@@ -1,24 +1,32 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Guardian } from './schemas/guardian.schema';
 import mongoose from 'mongoose';
 import { CreateGuardianDto } from './dto/create-guardian.dto';
-import { Certification } from './schemas/certification.schema';
-import { CreateCertificationDto } from './dto/create-certification.dto';
+import { Certificate } from '../certificate/schemas/certificate.schema';
+import { CreateCertificateDto } from '../certificate/dto/create-certificate.dto';
+import { CreateExperienceDto } from 'src/experience/dto/create-experience.dto';
 import { ImageService } from 'src/image/image.service';
+import { Experience } from '../experience/schemas/experience.schema';
 
 @Injectable()
 export class GuardianService {
   constructor(
     @InjectModel(Guardian.name)
     private GuardianModel: mongoose.Model<Guardian>,
-    @InjectModel(Certification.name)
-    private certificationModel: mongoose.Model<Certification>,
-    private imageSerive: ImageService,
+    @InjectModel(Certificate.name)
+    private certificateModel: mongoose.Model<Certificate>,
+    @InjectModel(Experience.name)
+    private experienceModel: mongoose.Model<Experience>,
+    private imageService: ImageService,
   ) {}
 
   async findAll(): Promise<Guardian[]> {
-    const guardians = await this.GuardianModel.find().populate('certifications');
+    const guardians = await this.GuardianModel.find().populate('certificates');
     return guardians;
   }
 
@@ -67,38 +75,61 @@ export class GuardianService {
     return updated;
   }
 
-  async createCertification(
-    cerDto: CreateCertificationDto,
-    guardianId: string,
-  ) {
-    const created = await this.certificationModel.create(cerDto);
+  async createCertificate(cerDto: CreateCertificateDto, guardianId: string) {
+    const created = await this.certificateModel.create(cerDto);
 
     await this.GuardianModel.findByIdAndUpdate(guardianId, {
       $push: {
-        certifications: created._id,
+        certificates: created._id,
       },
     });
 
     return created;
   }
 
-  async uploadCertificationImage(file: Express.Multer.File, id: string) {
-    const imageUrl = await this.imageSerive.saveImageToCloud(file);
+  async deleteCertificate(
+    guardianId: string,
+    certificateId: any,
+  ): Promise<Guardian> {
+    const guardian = await this.GuardianModel.findById(guardianId);
 
-    const updated = await this.certificationModel.findByIdAndUpdate(
-      id,
-      {
-        image: imageUrl,
-      },
-      {
-        new: true,
-      },
+    guardian.certificates = guardian.certificates.filter(
+      (c) => c.toString() !== certificateId.toString(),
     );
 
-    if(!updated){
-      throw new BadRequestException('id not found')
-    }
+    await this.GuardianModel.findByIdAndUpdate(guardianId, guardian);
 
-    return updated;
+    await this.certificateModel.findByIdAndDelete(certificateId);
+
+    return guardian;
+  }
+
+  async createExperience(cerDto: CreateExperienceDto, guardianId: string) {
+    const created = await this.experienceModel.create(cerDto);
+
+    await this.GuardianModel.findByIdAndUpdate(guardianId, {
+      $push: {
+        experiences: created._id,
+      },
+    });
+
+    return created;
+  }
+
+  async deleteExperience(
+    guardianId: string,
+    experienceId: any,
+  ): Promise<Guardian> {
+    const guardian = await this.GuardianModel.findById(guardianId);
+
+    guardian.experiences = guardian.experiences.filter(
+      (c) => c.toString() !== experienceId.toString(),
+    );
+
+    await this.GuardianModel.findByIdAndUpdate(guardianId, guardian);
+
+    await this.experienceModel.findByIdAndDelete(experienceId);
+
+    return guardian;
   }
 }

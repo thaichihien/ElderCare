@@ -3,13 +3,13 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 @Schema({
   timestamps: true,
 })
-export class Certification {
+export class Certificate {
   @Prop()
   title: string;
   @Prop()
   description: string;
   @Prop()
-  image: any;
+  image: string;
 }
 
-export const CertificationSchema = SchemaFactory.createForClass(Certification);
+export const CertificateSchema = SchemaFactory.createForClass(Certificate);
