@@ -1,4 +1,5 @@
 import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 
 export class CreateExperienceDto {
   @IsNotEmpty()
@@ -11,9 +12,13 @@ export class CreateExperienceDto {
 
   @IsNotEmpty()
   @IsDate()
+  @Type(() => Date)
+  @Transform((value) => value.valueOf(), { toPlainOnly: true })
   readonly startDate: Date;
 
-  @IsNotEmpty()
   @IsDate()
+  @IsOptional()
+  @Type(() => Date)
+  @Transform((value) => value.valueOf(), { toPlainOnly: true })
   readonly endDate: Date;
 }

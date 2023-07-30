@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateCertificationDto {
+export class CreateCertificateDto {
   @ApiProperty({ example: 'tên loại bằng cấp/chứng chỉ' })
   @IsString()
   @IsNotEmpty()
