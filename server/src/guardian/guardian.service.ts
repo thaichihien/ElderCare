@@ -30,7 +30,9 @@ export class GuardianService {
   }
 
   async findById(id: string): Promise<Guardian> {
-    const guardian = await this.GuardianModel.findById(id);
+    const guardian = await this.GuardianModel.findById(id)
+      .populate('certificates')
+      .populate('experiences');
 
     if (!guardian) {
       throw new NotFoundException(`Guardian not found with id ${id}`);
