@@ -1,18 +1,34 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/swagger';
+import {
+  DocumentBuilder,
+  SwaggerDocumentOptions,
+  SwaggerModule,
+} from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import mongoose from 'mongoose';
 
-
-
-const PORT = process.env.PORT || 3000
-const host = '0.0.0.0' 
-
+const PORT = process.env.PORT || 3000;
+const host = '0.0.0.0';
 
 async function bootstrap() {
+
+  const connectDB = async () => {
+    try {
+      console.log(process.env.DB_URI)
+      const conn = await mongoose.connect(process.env.DB_URI);
+      console.log(`MongoDB Connected: ${conn.connection.host}`);
+    } catch (error) {
+      console.log(error);
+      process.exit(1);
+    }
+  };
+
+  await connectDB()
+
   const app = await NestFactory.create(AppModule);
-  app.enableCors()
-  app.useGlobalPipes(new ValidationPipe())
+  app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
     .setTitle('Eldercare API')
@@ -20,17 +36,15 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Authentication')
     .build();
-  const options: SwaggerDocumentOptions =  {
-      operationIdFactory: (
-        controllerKey: string,
-        methodKey: string
-      ) => methodKey
-    };
-  const document = SwaggerModule.createDocument(app, config,options);
+  const options: SwaggerDocumentOptions = {
+    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+  };
+  const document = SwaggerModule.createDocument(app, config, options);
   SwaggerModule.setup('doc', app, document);
 
+  
 
-  await app.listen(PORT,host);
-  console.log(`server is ready at ${app.getUrl}`)
+  await app.listen(PORT, host);
+  console.log(`server is ready at ${app.getUrl}`);
 }
 bootstrap();
