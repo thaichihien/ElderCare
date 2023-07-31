@@ -15,8 +15,9 @@ async function bootstrap() {
 
   const connectDB = async () => {
     try {
-      console.log(process.env.DB_URI)
-      const conn = await mongoose.connect(process.env.DB_URI);
+      const connectstring = process.env.DB_URI
+      console.log(connectstring);
+      const conn = await mongoose.connect(connectstring);
       console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
       console.log(error);
