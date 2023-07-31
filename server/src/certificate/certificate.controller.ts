@@ -13,19 +13,22 @@ import { IsObjectId } from 'src/utils/is-object-id.pipe';
 import { CertificateService } from './certificate.service';
 import { CreateCertificateDto } from './dto/create-certificate.dto';
 import { Certificate } from './schemas/certificate.schema';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+@ApiTags('Certificate')
 @Controller('certificate')
 export class CertificateController {
   // Cài đặt service
   constructor(private certificateService: CertificateService) {}
 
+  @ApiOperation({summary : "Get all certifications of all guardian"})
   @Get()
   async getAllCertificates(): Promise<Certificate[]> {
     return this.certificateService.findAll();
   }
 
+  @ApiOperation({summary : "Create a certification (but haven't added it for guardian yet)"})
   @Post()
   async createCertificate(
     @Body()
@@ -34,6 +37,7 @@ export class CertificateController {
     return this.certificateService.create(Certificate);
   }
 
+  @ApiOperation({summary : "Find a certification by certification's id"})
   @Get(':id')
   async findCertificateById(
     @Param('id', IsObjectId)
@@ -42,7 +46,7 @@ export class CertificateController {
     return this.certificateService.findById(id);
   }
 
-  @ApiOperation({ summary: 'Upload certificate image' })
+  @ApiOperation({ summary: 'Upload certificate image to certificate with id' })
   @Post('certificate/:id/image')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCertificateImage(

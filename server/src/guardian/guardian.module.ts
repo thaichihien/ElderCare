@@ -20,7 +20,6 @@ import { ImageModule } from 'src/image/image.module';
       { name: Experience.name, schema: ExperienceSchema },
       { name: Certificate.name, schema: CertificateSchema },
     ]),
-    ImageModule,
   ],
   controllers: [GuardianController],
   providers: [GuardianService],

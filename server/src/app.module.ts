@@ -12,6 +12,8 @@ import { ImageService } from './image/image.service';
 import { ImageModule } from './image/image.module';
 import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from './schedule/schedule.module';
+import { CertificateModule } from './certificate/certificate.module';
+import { ExperienceModule } from './experience/experience.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { ScheduleModule } from './schedule/schedule.module';
     ImageModule,
     TaskModule,
     ScheduleModule,
+    CertificateModule,
+    ExperienceModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -79,7 +79,7 @@ export class GuardianController {
     return this.guardianService.updateLevel(id, level);
   }
 
-  @ApiOperation({ summary: 'upload experience from guardian' })
+  @ApiOperation({ summary: 'Create a certification and add it to guardian with id' })
   @Post(':id/certificate')
   async createCertificate(
     @Param('id')
@@ -89,7 +89,7 @@ export class GuardianController {
     return this.guardianService.createCertificate(cerDto, id);
   }
 
-  @ApiOperation({ summary: 'upload experience from guardian' })
+  @ApiOperation({ summary: " delete certification (certificateId) and remove it from guardian (id)" })
   @Delete(':id/certificate/:certificateId')
   async deleteCertificate(
     @Param('id')
@@ -100,7 +100,7 @@ export class GuardianController {
     return this.guardianService.deleteCertificate(id, certificateId);
   }
 
-  @ApiOperation({ summary: 'upload experience from guardian' })
+  @ApiOperation({ summary: 'Create a experience and add it to guardian with id' })
   @Post(':id/experience')
   async createExperience(
     @Param('id')
@@ -110,7 +110,7 @@ export class GuardianController {
     return this.guardianService.createExperience(experienceDto, id);
   }
 
-  @ApiOperation({ summary: 'upload experience from guardian' })
+  @ApiOperation({ summary: " delete experience (experienceId) and remove it from guardian (id)" })
   @Delete(':id/experience/:experienceId')
   async deleteExperience(
     @Param('id')

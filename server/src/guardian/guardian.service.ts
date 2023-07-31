@@ -22,7 +22,6 @@ export class GuardianService {
     private certificateModel: mongoose.Model<Certificate>,
     @InjectModel(Experience.name)
     private experienceModel: mongoose.Model<Experience>,
-    private imageService: ImageService,
   ) {}
 
   async findAll(): Promise<Guardian[]> {
