@@ -47,7 +47,7 @@ export class CertificateController {
   }
 
   @ApiOperation({ summary: 'Upload certificate image to certificate with id' })
-  @Post('certificate/:id/image')
+  @Post(':id/image')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCertificateImage(
     @UploadedFile() file: Express.Multer.File,
