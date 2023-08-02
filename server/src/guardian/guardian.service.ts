@@ -25,7 +25,7 @@ export class GuardianService {
   ) {}
 
   async findAll(): Promise<Guardian[]> {
-    const guardians = await this.GuardianModel.find().populate('certificates');
+    const guardians = await this.GuardianModel.find().populate('certificates').populate('experiences');
     return guardians;
   }
 
@@ -81,7 +81,13 @@ export class GuardianService {
   }
 
   async createCertificate(cerDto: CreateCertificateDto, guardianId: string) {
-    const created = await this.certificateModel.create(cerDto);
+
+    const certificateDto = {
+      title : cerDto.title,
+      description :cerDto.description
+    }
+
+    const created = await this.certificateModel.create(certificateDto);
 
     const guardian = await this.GuardianModel.findByIdAndUpdate(guardianId, {
       $push: {
@@ -129,7 +135,15 @@ export class GuardianService {
   }
 
   async createExperience(cerDto: CreateExperienceDto, guardianId: string) {
-    const created = await this.experienceModel.create(cerDto);
+
+    const experienceDto = {
+      title : cerDto.title,
+      description : cerDto.description,
+      startDate : new Date(cerDto.startDate),
+      endDate : new Date(cerDto.endDate),
+    }
+
+    const created = await this.experienceModel.create(experienceDto);
 
     const guardian =  await this.GuardianModel.findByIdAndUpdate(guardianId, {
       $push: {
