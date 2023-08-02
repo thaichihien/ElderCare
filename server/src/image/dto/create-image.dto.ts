@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateImageDto {
 
@@ -22,5 +22,9 @@ export class CreateImageDto {
   @Type(() => Date)
   @IsDate()
   readonly time: Date;
+
+
+  @IsString()
+  @IsOptional()
   readonly task: string;
 }

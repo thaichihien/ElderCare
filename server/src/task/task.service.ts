@@ -177,6 +177,7 @@ export class TaskService {
                 amount: 7,
               },
             },
+            isDone : false
           },
         },
       ],

@@ -14,6 +14,8 @@ import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from './schedule/schedule.module';
 import { CertificateModule } from './certificate/certificate.module';
 import { ExperienceModule } from './experience/experience.module';
+import { FeedbackModule } from './feedback/feedback.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -30,7 +32,9 @@ import { ExperienceModule } from './experience/experience.module';
     TaskModule,
     ScheduleModule,
     CertificateModule,
-    ExperienceModule
+    ExperienceModule,
+    FeedbackModule,
+    ReportModule
   ],
   controllers: [AppController],
   providers: [AppService],

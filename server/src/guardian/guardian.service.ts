@@ -59,7 +59,9 @@ export class GuardianService {
   async update(id: string, guardian: CreateGuardianDto): Promise<Guardian> {
     const updated = await this.GuardianModel.findByIdAndUpdate(id, guardian, {
       new: true,
-    });
+    })
+      .populate('certificates')
+      .populate('experiences');
 
     return updated;
   }
@@ -71,7 +73,9 @@ export class GuardianService {
   async updateLevel(id: string, level: string): Promise<Guardian> {
     const updated = await this.GuardianModel.findByIdAndUpdate(id, {
       level: level,
-    });
+    })
+      .populate('certificates')
+      .populate('experiences');
 
     return updated;
   }
@@ -98,7 +102,9 @@ export class GuardianService {
       (c) => c.toString() !== certificateId.toString(),
     );
 
-    await this.GuardianModel.findByIdAndUpdate(guardianId, guardian);
+    await this.GuardianModel.findByIdAndUpdate(guardianId, guardian)
+      .populate('certificates')
+      .populate('experiences');
 
     await this.certificateModel.findByIdAndDelete(certificateId);
 
@@ -127,7 +133,9 @@ export class GuardianService {
       (c) => c.toString() !== experienceId.toString(),
     );
 
-    await this.GuardianModel.findByIdAndUpdate(guardianId, guardian);
+    await this.GuardianModel.findByIdAndUpdate(guardianId, guardian)
+      .populate('certificates')
+      .populate('experiences');
 
     await this.experienceModel.findByIdAndDelete(experienceId);
 
