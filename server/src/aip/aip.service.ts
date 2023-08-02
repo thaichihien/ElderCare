@@ -4,6 +4,7 @@ import { Aip } from './schemas/aip.schema';
 import mongoose from 'mongoose';
 import { AipDto } from './dto/aip.dto';
 import { AipHealthStatusDto } from './dto/aip-healthStatus.dto';
+import { AipNoteDto } from './dto/aip-note.dto';
 
 @Injectable()
 export class AipService {
@@ -86,6 +87,21 @@ export class AipService {
         }
 
         aip.healthStatus = aipHealthStatus.healthStatus;
+
+        const updated = await this.aipModel.findByIdAndUpdate(apiId, aip, { new: true })
+
+        return updated
+    }
+
+    async updateNote(apiId: string, aipNoteDto: AipNoteDto): Promise<Aip> {
+
+        const aip = await this.aipModel.findById(apiId);
+
+        if (!aip) {
+            throw new NotFoundException(`aip not found with id ${apiId}`);
+        }
+
+        aip.note = aipNoteDto.note;
 
         const updated = await this.aipModel.findByIdAndUpdate(apiId, aip, { new: true })
 
