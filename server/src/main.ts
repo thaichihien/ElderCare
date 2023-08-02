@@ -46,6 +46,6 @@ async function bootstrap() {
   
 
   await app.listen(PORT, host);
-  console.log(`server is ready at ${app.getUrl}`);
+  console.log(`server is ready at http://localhost:${PORT}`);
 }
 bootstrap();
