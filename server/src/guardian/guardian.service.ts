@@ -83,11 +83,17 @@ export class GuardianService {
   async createCertificate(cerDto: CreateCertificateDto, guardianId: string) {
     const created = await this.certificateModel.create(cerDto);
 
-    await this.GuardianModel.findByIdAndUpdate(guardianId, {
+    const guardian = await this.GuardianModel.findByIdAndUpdate(guardianId, {
       $push: {
         certificates: created._id,
       },
     });
+
+    if(!guardian){
+      await this.certificateModel.findByIdAndDelete(created._id);
+      throw new BadRequestException(`Guardian not found with id : ${guardianId}`)
+    }
+
 
     return created;
   }
@@ -97,28 +103,46 @@ export class GuardianService {
     certificateId: any,
   ): Promise<Guardian> {
     const guardian = await this.GuardianModel.findById(guardianId);
+    const certificateChecck = await this.certificateModel.findById(certificateId)
+
+    if(!guardian){
+      throw new BadRequestException(`Guardian not found with id : ${guardianId}`)
+    }
+
+    if(!certificateChecck){
+      throw new BadRequestException(`Certificate not found with id : ${certificateId}`)
+    }
 
     guardian.certificates = guardian.certificates.filter(
       (c) => c.toString() !== certificateId.toString(),
     );
 
-    await this.GuardianModel.findByIdAndUpdate(guardianId, guardian)
+    
+
+    const updated = await this.GuardianModel.findByIdAndUpdate(guardianId, guardian,{new : true})
       .populate('certificates')
       .populate('experiences');
 
     await this.certificateModel.findByIdAndDelete(certificateId);
 
-    return guardian;
+    return updated;
   }
 
   async createExperience(cerDto: CreateExperienceDto, guardianId: string) {
     const created = await this.experienceModel.create(cerDto);
 
-    await this.GuardianModel.findByIdAndUpdate(guardianId, {
+    const guardian =  await this.GuardianModel.findByIdAndUpdate(guardianId, {
       $push: {
         experiences: created._id,
       },
     });
+
+    if(!guardian){
+      await this.experienceModel.findByIdAndDelete(created._id);
+      throw new BadRequestException(`Guardian not found with id : ${guardianId}`)
+    }
+    
+
 
     return created;
   }
