@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import { CreateCertificateDto } from './dto/create-certificate.dto';
 import { Certificate } from './schemas/certificate.schema';
 import { ImageService } from 'src/image/image.service';
+import { UpdateCetificateDto } from './dto/update-certificate.dto';
 
 @Injectable()
 export class CertificateService {
@@ -35,6 +36,12 @@ export class CertificateService {
   async create(Certificate: CreateCertificateDto): Promise<Certificate> {
     const created = await this.CertificateModel.create(Certificate);
     return created;
+  }
+
+
+  async update(id:string,cerDto: UpdateCetificateDto): Promise<Certificate> {
+    const updated = await this.CertificateModel.findByIdAndUpdate(id,cerDto,{new : true});
+    return updated;
   }
 
   async uploadCertificateImage(file: Express.Multer.File, id: string) {
