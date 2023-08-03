@@ -72,14 +72,41 @@ export class TaskService {
     return tasks;
   }
 
-  async findByGuardianId(id: string) {
-    const guardianTasks = await this.taskModel
+  async findByGuardianId(id: string,date :string) {
+
+    let guardianTasks
+    if(date){
+      console.log(date)
+      let startDateSearch = new Date(date)
+      let endDateSearch = new Date(date)
+
+      if(!startDateSearch.valueOf()){
+        throw new BadRequestException("invalid date format")
+      }
+
+      startDateSearch.setHours(1,0,0)
+      endDateSearch.setHours(23,59,0)
+
+      // console.log(startDateSearch)
+      // console.log(endDateSearch)
+
+      guardianTasks = await this.taskModel
+      .find()
+      .where('guardian')
+      .equals(id)
+      .where('deadline')
+      .gte(startDateSearch.getTime())
+      .lte(endDateSearch.getTime())
+      .populate('image');
+    }else{
+      guardianTasks = await this.taskModel
       .find()
       .where('guardian')
       .equals(id)
       .where('deadline')
       .gte(new Date().getTime())
       .populate('image');
+    }
 
     return guardianTasks;
   }
