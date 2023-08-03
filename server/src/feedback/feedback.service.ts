@@ -1,26 +1,72 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { UpdateFeedbackDto } from './dto/update-feedback.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
+import { Feedback } from './schemas/feedback.schema';
 
 @Injectable()
 export class FeedbackService {
-  create(createFeedbackDto: CreateFeedbackDto) {
-    return 'This action adds a new feedback';
+  constructor(
+    @InjectModel(Feedback.name)
+    private feedbackModel: mongoose.Model<Feedback>,
+  ) {}
+
+  async create(createFeedbackDto: CreateFeedbackDto) {
+    let gid = createFeedbackDto.guardian;
+    let aid = createFeedbackDto.aip;
+
+    if (!mongoose.Types.ObjectId.isValid(gid)) {
+      throw new BadRequestException('Invalid guardian id');
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(aid)) {
+      throw new BadRequestException('Invalid aip id');
+    }
+
+    createFeedbackDto.guardian = new mongoose.Types.ObjectId(gid);
+    createFeedbackDto.aip = new mongoose.Types.ObjectId(aid);
+
+    const created = await this.feedbackModel.create(createFeedbackDto);
+    return created;
   }
 
-  findAll() {
-    return `This action returns all feedback`;
+  async findAll() {
+    const all = await this.feedbackModel
+      .find()
+      .populate('guardian')
+      .populate('aip');
+
+    return all;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} feedback`;
+  async findOne(id: string) {
+    const one = await this.feedbackModel
+      .findById(id)
+      .populate('guardian')
+      .populate('aip');
+
+    return one;
   }
 
-  update(id: number, updateFeedbackDto: UpdateFeedbackDto) {
-    return `This action updates a #${id} feedback`;
+  async findAllFromGuardian(id: string) {
+    const one = await this.feedbackModel
+      .find()
+      .where('guardian')
+      .equals(id)
+      .populate('guardian')
+      .populate('aip');
+
+    return one;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} feedback`;
+  // async update(id: string, updateFeedbackDto: UpdateFeedbackDto) {
+
+    
+  //   return `This action updates a #${id} feedback`;
+  // }
+
+  async remove(id: string) {
+    return await this.feedbackModel.findByIdAndRemove(id);
   }
 }
