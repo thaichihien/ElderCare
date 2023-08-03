@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { Experience } from './schemas/experience.schema';
+import { UpdateExperienceDto } from './dto/update-experience.dto';
 
 @Injectable()
 export class ExperienceService {
@@ -34,5 +35,10 @@ export class ExperienceService {
   async create(Experience: CreateExperienceDto): Promise<Experience> {
     const created = await this.ExperienceModel.create(Experience);
     return created;
+  }
+
+  async update(id: string,exDto: UpdateExperienceDto): Promise<Experience> {
+    const updated = await this.ExperienceModel.findByIdAndUpdate(id,exDto,{new: true})
+    return updated;
   }
 }

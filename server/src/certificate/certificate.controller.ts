@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseInterceptors,
@@ -15,6 +16,7 @@ import { CreateCertificateDto } from './dto/create-certificate.dto';
 import { Certificate } from './schemas/certificate.schema';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateCetificateDto } from './dto/update-certificate.dto';
 
 @ApiTags('Certificate')
 @Controller('certificate')
@@ -36,6 +38,20 @@ export class CertificateController {
   ): Promise<Certificate> {
     return this.certificateService.create(Certificate);
   }
+
+  @ApiOperation({summary : "update a certification"})
+  @Put(':id')
+  async updateCertificate(
+    @Param('id', IsObjectId)
+    id:string,
+    @Body()
+    cerDto: UpdateCetificateDto,
+  ): Promise<Certificate> {
+    return this.certificateService.update(id,cerDto);
+  }
+
+
+
 
   @ApiOperation({summary : "Find a certification by certification's id"})
   @Get(':id')
