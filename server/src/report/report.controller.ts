@@ -1,34 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ReportService } from './report.service';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
+import { IsObjectId } from 'src/utils/is-object-id.pipe';
+import { ApiTags } from '@nestjs/swagger';
+import { Report } from './schemas/report.schema';
 
+@ApiTags('Report')
 @Controller('report')
 export class ReportController {
-  constructor(private readonly reportService: ReportService) {}
+  constructor(private reportService: ReportService) {}
 
   @Post()
-  create(@Body() createReportDto: CreateReportDto) {
-    return this.reportService.create(createReportDto);
+  create(@Query('guardianId') guardianId: string, 
+          @Query('aipId') aipId: string,
+          @Body() createReportDto: CreateReportDto): Promise<Report> {
+
+    return this.reportService.create(guardianId, aipId, createReportDto);
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<Report[]> {
     return this.reportService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reportService.findOne(+id);
+  findOne(@Param('id', IsObjectId) id: string): Promise<Report> {
+    return this.reportService.findOne(id);
+  }
+
+  @Get('guardian/:guardianId')
+  findReportByGuardianId(@Param('guardianId') guardianId: string): Promise<Report[]> {
+    return this.reportService.findReportByGuardianId(guardianId);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
-    return this.reportService.update(+id, updateReportDto);
+  update(@Param('id', IsObjectId) id: string, @Body() updateReportDto: UpdateReportDto): Promise<Report> {
+    return this.reportService.update(id, updateReportDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reportService.remove(+id);
+  remove(@Param('id', IsObjectId) id: string): Promise<void> {
+    return this.reportService.remove(id);
   }
 }
