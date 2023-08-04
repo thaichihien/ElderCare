@@ -5,6 +5,10 @@ import mongoose from 'mongoose';
 import { AipDto } from './dto/aip.dto';
 import { AipHealthStatusDto } from './dto/aip-healthStatus.dto';
 import { AipNoteDto } from './dto/aip-note.dto';
+import { Task } from 'src/task/schemas/task.schema';
+import { endOfDay, format, isValid, parse, parseISO, startOfDay } from 'date-fns';
+import { AipDateDto } from './dto/aip-date.dto';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class AipService {
@@ -12,6 +16,9 @@ export class AipService {
     constructor(
         @InjectModel(Aip.name)
         private aipModel: mongoose.Model<Aip>,
+
+        @InjectModel(Task.name)
+        private taskModel: mongoose.Model<Task>,
     ) { }
 
     async findAll(): Promise<Aip[]> {
@@ -39,6 +46,34 @@ export class AipService {
         }
 
         return aip;
+    }
+
+    async findAipsByGuardianAndDate(guardianId: string, date: string): Promise<Aip[]> {
+
+        const startOfDay = new Date(date);
+
+        const endOfDay = new Date(date);
+        endOfDay.setDate(endOfDay.getDate() + 1);
+
+        console.log(startOfDay);
+        console.log(format(startOfDay, "dd-MM-yyyy"))
+        console.log(endOfDay);
+        console.log(format(endOfDay, "dd-MM-yyyy"))
+
+        const tasks = await this.taskModel.find({
+            guardian: guardianId,
+            deadline: {
+                $gte: startOfDay,
+                $lt: endOfDay,
+            },
+        });
+        const aipIds = tasks.map((task) => task.aip); // Lấy danh sách các ObjectId của Aip
+
+        const aips = await this.aipModel.find({ _id: { $in: aipIds } }).select('_id firstName lastName dateOfBirth address');
+
+        console.log(aips)
+
+        return aips;
     }
 
     async create(aip: AipDto): Promise<Aip> {
