@@ -14,7 +14,7 @@ import { AipDto } from './dto/aip.dto';
 import { Aip } from './schemas/aip.schema';
 import { IsObjectId } from '../utils/is-object-id.pipe';
 import { AipAssignDto } from './dto/aip-assign.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AipHealthStatusDto } from './dto/aip-healthStatus.dto';
 import { AipNoteDto } from './dto/aip-note.dto';
 import { AipDateDto } from './dto/aip-date.dto';
@@ -55,6 +55,7 @@ export class AipController {
   }
 
   @Get('/guardian/:guardianId')
+  @ApiQuery({ name: 'date', required: true, description: 'The date parameter in the format yyyy-MM-dd' })
   async findAipsByGuardianAndDate(
     @Param('guardianId') guardianId: string,
     @Query('date') date: string
