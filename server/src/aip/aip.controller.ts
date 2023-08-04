@@ -17,6 +17,8 @@ import { AipAssignDto } from './dto/aip-assign.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AipHealthStatusDto } from './dto/aip-healthStatus.dto';
 import { AipNoteDto } from './dto/aip-note.dto';
+import { AipDateDto } from './dto/aip-date.dto';
+import { Task } from 'src/task/schemas/task.schema';
 
 @ApiTags('Aip')
 @Controller('aip')
@@ -50,6 +52,15 @@ export class AipController {
     CCCD: string,
   ): Promise<Aip[]> {
     return this.aipService.findByCCCD(CCCD);
+  }
+
+  @Get('/guardian/:guardianId')
+  async findAipsByGuardianAndDate(
+    @Param('guardianId') guardianId: string,
+    @Query('date') date: string
+  ): Promise<Aip[]> {
+
+    return this.aipService.findAipsByGuardianAndDate(guardianId, date);
   }
 
   @Put('unassign/:id')
