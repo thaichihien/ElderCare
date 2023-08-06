@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AipService } from './aip.service';
-import { AipController } from './aip.controller';
-import { Aip, AipSchema } from './schemas/aip.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Task, TaskSchema } from 'src/task/schemas/task.schema';
+import Task, { TaskSchema } from 'src/task/schemas/task.schema';
+import { AipController } from './aip.controller';
+import { AipService } from './aip.service';
+import { Aip, AipSchema } from './schemas/aip.schema';
 
 @Module({
   imports: [
@@ -13,6 +13,6 @@ import { Task, TaskSchema } from 'src/task/schemas/task.schema';
     ]),
   ],
   providers: [AipService],
-  controllers: [AipController]
+  controllers: [AipController],
 })
-export class AipModule {}
+export class AipModule { }

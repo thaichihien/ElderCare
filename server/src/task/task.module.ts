@@ -1,20 +1,22 @@
 import { Module } from '@nestjs/common';
-import { TaskService } from './task.service';
-import { TaskController } from './task.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Task, TaskSchema } from './schemas/task.schema';
 import { ImageModule } from 'src/image/image.module';
 import { ScheduleModule } from 'src/schedule/schedule.module';
 import { Schedule, ScheduleSchema } from 'src/schedule/schemas/schedule.schema';
+import Task, { TaskSchema } from './schemas/task.schema';
+import { TaskController } from './task.controller';
+import { TaskService } from './task.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
-    MongooseModule.forFeature([{ name: Schedule.name, schema: ScheduleSchema }]),
+    MongooseModule.forFeature([
+      { name: Schedule.name, schema: ScheduleSchema },
+    ]),
     ImageModule,
     //ScheduleModule
   ],
   controllers: [TaskController],
   providers: [TaskService],
 })
-export class TaskModule {}
+export class TaskModule { }
