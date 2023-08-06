@@ -6,6 +6,21 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { ApiTags } from '@nestjs/swagger';
 
+export interface DayShift {
+  morning_shift: Schedule[];
+  afternoon_shift: Schedule[];
+  evening_shift: Schedule[];
+}
+
+export interface WeekShift {
+  monday: DayShift;
+  tuesday: DayShift;
+  wednesday: DayShift;
+  thursday: DayShift;
+  friday: DayShift;
+  saturday: DayShift;
+}
+
 @ApiTags('Schedule')
 @Injectable()
 export class ScheduleService {
@@ -15,7 +30,6 @@ export class ScheduleService {
   ) {}
 
   async create(createScheduleDto: CreateScheduleDto) {
-
     // ! Check if id is valid
 
     const created = await this.scheduleModel.create(createScheduleDto);
@@ -30,11 +44,11 @@ export class ScheduleService {
   async findAllAvailable() {
     const all = await this.scheduleModel.find().or([
       {
-        startTime : { $gte : new Date()}
+        startTime: { $gte: new Date() },
       },
       {
-        isCycle : true
-      }
+        isCycle: true,
+      },
     ]);
     return all;
   }
@@ -44,11 +58,151 @@ export class ScheduleService {
     return one;
   }
 
-  async findScheduleOfGuardian(id: string) {
-    const schedules = await this.scheduleModel.find().where('guardian').equals(id)
+  async findScheduleOfGuardian(id: string, date: string) {
+    let schedules: Schedule[];
+
+    if (date) {
+      let scheduleADay: DayShift = {
+        morning_shift: [],
+        afternoon_shift: [],
+        evening_shift: [],
+      };
+      const startDateSearch = new Date(date);
+      const endDateSearch = new Date(date);
+      startDateSearch.setHours(1, 0, 0);
+      endDateSearch.setHours(23, 59, 0);
+
+      schedules = await this.scheduleModel
+        .find()
+        .where('guardian')
+        .equals(id)
+        .where('startTime')
+        .gte(startDateSearch.getTime())
+        .lte(endDateSearch.getTime());
+
+      for (let index = 0; index < schedules.length; index++) {
+        const element = schedules[index];
+        const h = new Date(element.startTime).getHours();
+
+        this.arrangeDayShift(h, scheduleADay, element);
+      }
+
+      return scheduleADay;
+    } else {
+      schedules = await this.scheduleModel.find().where('guardian').equals(id);
+    }
+
     return schedules;
   }
 
+  arrangeDayShift(h: number, scheduleADay: DayShift, element: Schedule) {
+    if (h >= 7 && h < 11) {
+      scheduleADay.morning_shift.push(element);
+    } else if (h >= 13 && h < 17) {
+      scheduleADay.afternoon_shift.push(element);
+    } else if (h >= 17 && h < 21) {
+      scheduleADay.evening_shift.push(element);
+    }
+  }
+
+  arrangeWeekShift(
+    d: number,
+    h: number,
+    scheduleShift: WeekShift,
+    element: Schedule,
+  ) {
+    switch (d) {
+      case 1:
+        this.arrangeDayShift(h, scheduleShift.monday, element);
+        break;
+      case 2:
+        this.arrangeDayShift(h, scheduleShift.tuesday, element);
+        break;
+      case 3:
+        this.arrangeDayShift(h, scheduleShift.wednesday, element);
+        break;
+      case 4:
+        this.arrangeDayShift(h, scheduleShift.thursday, element);
+        break;
+      case 5:
+        this.arrangeDayShift(h, scheduleShift.friday, element);
+        break;
+      case 6:
+        this.arrangeDayShift(h, scheduleShift.saturday, element);
+        break;
+      default:
+        break;
+    }
+  }
+
+  async findScheduleOfGuardianCurrentWeek(id: string, date: string) {
+    const week = this.getFirstDayAndLastDayOfWeek(date ?? new Date());
+    const weekShift: WeekShift = {
+      monday: {
+        morning_shift: [],
+        afternoon_shift: [],
+        evening_shift: [],
+      },
+      tuesday: {
+        morning_shift: [],
+        afternoon_shift: [],
+        evening_shift: [],
+      },
+      wednesday: {
+        morning_shift: [],
+        afternoon_shift: [],
+        evening_shift: [],
+      },
+      thursday: {
+        morning_shift: [],
+        afternoon_shift: [],
+        evening_shift: [],
+      },
+      friday: {
+        morning_shift: [],
+        afternoon_shift: [],
+        evening_shift: [],
+      },
+      saturday: {
+        morning_shift: [],
+        afternoon_shift: [],
+        evening_shift: [],
+      },
+    };
+
+    const schedules = await this.scheduleModel
+      .find()
+      .where('guardian')
+      .equals(id)
+      .where('startTime')
+      .gte(week.firstDay.getTime())
+      .lte(week.lastDay.getTime());
+
+    for (let index = 0; index < schedules.length; index++) {
+      const element = schedules[index];
+      const dateShift = new Date(element.startTime);
+      this.arrangeWeekShift(dateShift.getDay(),dateShift.getHours(),weekShift,element)
+    }
+
+    return weekShift
+  }
+
+  getFirstDayAndLastDayOfWeek(d: string | Date) {
+    // 👇️ clone date object, so we don't mutate it
+    const date = new Date(d);
+    const day = date.getDay(); // 👉️ get day of week
+
+    // 👇️ day of month - day of week (-6 if Sunday), otherwise +1
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+    const firstDay = new Date(date.setDate(diff));
+    const lastDay = new Date(firstDay);
+    lastDay.setDate(lastDay.getDate() + 6);
+
+    firstDay.setHours(1, 0, 0);
+    lastDay.setHours(23, 59, 0);
+
+    return { firstDay, lastDay };
+  }
 
   async update(id: string, updateScheduleDto: UpdateScheduleDto) {
     const updated = await this.scheduleModel.findByIdAndUpdate(
