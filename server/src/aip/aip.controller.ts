@@ -9,21 +9,21 @@ import {
   Query,
 } from '@nestjs/common';
 
-import { AipService } from './aip.service';
-import { AipDto } from './dto/aip.dto';
-import { Aip } from './schemas/aip.schema';
-import { IsObjectId } from '../utils/is-object-id.pipe';
-import { AipAssignDto } from './dto/aip-assign.dto';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import Task from 'src/task/schemas/task.schema';
+import { IsObjectId } from '../utils/is-object-id.pipe';
+import { AipService } from './aip.service';
+import { AipAssignDto } from './dto/aip-assign.dto';
+import { AipDateDto } from './dto/aip-date.dto';
 import { AipHealthStatusDto } from './dto/aip-healthStatus.dto';
 import { AipNoteDto } from './dto/aip-note.dto';
-import { AipDateDto } from './dto/aip-date.dto';
-import { Task } from 'src/task/schemas/task.schema';
+import { AipDto } from './dto/aip.dto';
+import { Aip } from './schemas/aip.schema';
 
 @ApiTags('Aip')
 @Controller('aip')
 export class AipController {
-  constructor(private aipService: AipService) {}
+  constructor(private aipService: AipService) { }
 
   @Post()
   async createAip(
@@ -56,12 +56,15 @@ export class AipController {
 
   @ApiOperation({ summary: 'Get aips by guardianId and date' })
   @Get('/guardian/:guardianId')
-  @ApiQuery({ name: 'date', required: true, description: 'The date parameter in the format yyyy-MM-dd' })
+  @ApiQuery({
+    name: 'date',
+    required: true,
+    description: 'The date parameter in the format yyyy-MM-dd',
+  })
   async findAipsByGuardianAndDate(
     @Param('guardianId') guardianId: string,
-    @Query('date') date: string
+    @Query('date') date: string,
   ): Promise<Aip[]> {
-
     return this.aipService.findAipsByGuardianAndDate(guardianId, date);
   }
 
@@ -86,18 +89,18 @@ export class AipController {
   @Put('health-status/:id')
   async updateHealthStatus(
     @Param('id') id: string,
-    @Body() aip: AipHealthStatusDto
+    @Body() aip: AipHealthStatusDto,
   ): Promise<Aip> {
     return this.aipService.updateHealthStatus(id, aip);
-  } 
+  }
 
   @Put('note/:id')
   async updateNote(
     @Param('id') id: string,
-    @Body() aip: AipNoteDto
+    @Body() aip: AipNoteDto,
   ): Promise<Aip> {
     return this.aipService.updateNote(id, aip);
-  } 
+  }
 
   @Delete(':id')
   async delete(

@@ -8,7 +8,7 @@ import { Schedule } from '../../schedule/schemas/schedule.schema';
 @Schema({
   timestamps: true,
 })
-export class Task {
+export default class Task {
   @Prop()
   title: string;
 
@@ -21,11 +21,11 @@ export class Task {
   // @Prop({type : Date})
   // startTime: Date
 
-  @Prop({type :Date})
+  @Prop({ type: Date })
   deadline: Date;
 
   @Prop()
-  isCycle : boolean;
+  isCycle: boolean;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Guardian' })
   guardian: Guardian;
@@ -38,7 +38,9 @@ export class Task {
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Image' })
   image: Image;
-}
 
+  @Prop()
+  note: string;
+}
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

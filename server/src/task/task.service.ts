@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
+import { CreateImageDto } from 'src/image/dto/create-image.dto';
+import { ImageService } from 'src/image/image.service';
+import { Schedule } from 'src/schedule/schemas/schedule.schema';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Task } from './schemas/task.schema';
-import mongoose from 'mongoose';
-import { ImageService } from 'src/image/image.service';
-import { CreateImageDto } from 'src/image/dto/create-image.dto';
-import { Schedule } from 'src/schedule/schemas/schedule.schema';
+import Task from './schemas/task.schema';
 
 @Injectable()
 export class TaskService {
@@ -19,9 +19,9 @@ export class TaskService {
   ) {}
 
   async create(createTaskDto: CreateTaskDto) {
-    let gid = createTaskDto.guardian;
-    let aid = createTaskDto.aip;
-    let scheduleid = createTaskDto.schedule;
+    const gid = createTaskDto.guardian;
+    const aid = createTaskDto.aip;
+    const scheduleid = createTaskDto.schedule;
 
     if (!mongoose.Types.ObjectId.isValid(gid)) {
       throw new BadRequestException('Invalid guardian id');
@@ -47,7 +47,7 @@ export class TaskService {
       );
     }
 
-    let deadline = schedule.startTime;
+    const deadline = schedule.startTime;
     deadline.setHours(23, 0, 0);
     createTaskDto.deadline = deadline;
     createTaskDto.guardian = new mongoose.Types.ObjectId(gid);
@@ -72,40 +72,39 @@ export class TaskService {
     return tasks;
   }
 
-  async findByGuardianId(id: string,date :string) {
+  async findByGuardianId(id: string, date: string) {
+    let guardianTasks;
+    if (date) {
+      console.log(date);
+      const startDateSearch = new Date(date);
+      const endDateSearch = new Date(date);
 
-    let guardianTasks
-    if(date){
-      console.log(date)
-      let startDateSearch = new Date(date)
-      let endDateSearch = new Date(date)
-
-      if(!startDateSearch.valueOf()){
-        throw new BadRequestException("invalid date format")
+      if (!startDateSearch.valueOf()) {
+        throw new BadRequestException('invalid date format');
       }
 
-      startDateSearch.setHours(1,0,0)
-      endDateSearch.setHours(23,59,0)
+      startDateSearch.setHours(1, 0, 0);
+      endDateSearch.setHours(23, 59, 0);
 
       // console.log(startDateSearch)
       // console.log(endDateSearch)
 
       guardianTasks = await this.taskModel
-      .find()
-      .where('guardian')
-      .equals(id)
-      .where('deadline')
-      .gte(startDateSearch.getTime())
-      .lte(endDateSearch.getTime())
-      .populate('image');
-    }else{
+        .find()
+        .where('guardian')
+        .equals(id)
+        .where('deadline')
+        .gte(startDateSearch.getTime())
+        .lte(endDateSearch.getTime())
+        .populate('image');
+    } else {
       guardianTasks = await this.taskModel
-      .find()
-      .where('guardian')
-      .equals(id)
-      .where('deadline')
-      .gte(new Date().getTime())
-      .populate('image');
+        .find()
+        .where('guardian')
+        .equals(id)
+        .where('deadline')
+        .gte(new Date().getTime())
+        .populate('image');
     }
 
     return guardianTasks;
@@ -204,7 +203,7 @@ export class TaskService {
                 amount: 7,
               },
             },
-            isDone : false
+            isDone: false,
           },
         },
       ],

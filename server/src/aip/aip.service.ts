@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Aip } from './schemas/aip.schema';
+import { plainToClass } from 'class-transformer';
+import { endOfDay, format, isValid, parse, parseISO, startOfDay } from 'date-fns';
 import mongoose from 'mongoose';
-import { AipDto } from './dto/aip.dto';
+import Task from 'src/task/schemas/task.schema';
+import { AipDateDto } from './dto/aip-date.dto';
 import { AipHealthStatusDto } from './dto/aip-healthStatus.dto';
 import { AipNoteDto } from './dto/aip-note.dto';
-import { Task } from 'src/task/schemas/task.schema';
-import { endOfDay, format, isValid, parse, parseISO, startOfDay } from 'date-fns';
-import { AipDateDto } from './dto/aip-date.dto';
-import { plainToClass } from 'class-transformer';
+import { AipDto } from './dto/aip.dto';
+import { Aip } from './schemas/aip.schema';
 
 @Injectable()
 export class AipService {
