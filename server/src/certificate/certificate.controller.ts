@@ -16,7 +16,7 @@ import { CreateCertificateDto } from './dto/create-certificate.dto';
 import { Certificate } from './schemas/certificate.schema';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UpdateCetificateDto } from './dto/update-certificate.dto';
+import { UpdateCertificateDto } from './dto/update-certificate.dto';
 
 @ApiTags('Certificate')
 @Controller('certificate')
@@ -45,7 +45,7 @@ export class CertificateController {
     @Param('id', IsObjectId)
     id:string,
     @Body()
-    cerDto: UpdateCetificateDto,
+    cerDto: UpdateCertificateDto,
   ): Promise<Certificate> {
     return this.certificateService.update(id,cerDto);
   }

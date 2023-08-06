@@ -16,6 +16,7 @@ jobs:
       - attach_workspace:
           at: ~/eldercare
       - run: npm run test
+      - run: npm run build
   install:
     executor:
       name: node
