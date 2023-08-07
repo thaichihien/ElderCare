@@ -9,14 +9,15 @@ import { TaskService } from './task.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
     MongooseModule.forFeature([
+      { name: Task.name, schema: TaskSchema },
       { name: Schedule.name, schema: ScheduleSchema },
     ]),
+
     ImageModule,
     //ScheduleModule
   ],
   controllers: [TaskController],
   providers: [TaskService],
 })
-export class TaskModule { }
+export class TaskModule {}
