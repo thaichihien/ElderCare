@@ -71,9 +71,14 @@ export class GuardianService {
   }
 
   async updateLevel(id: string, level: string): Promise<Guardian> {
+
+    if(level != "Amateur" && level != "Professional"){
+      throw new BadRequestException("Invalid guardian level")
+    }
+
     const updated = await this.GuardianModel.findByIdAndUpdate(id, {
       level: level,
-    })
+    },{new : true})
       .populate('certificates')
       .populate('experiences');
 
