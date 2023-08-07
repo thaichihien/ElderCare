@@ -40,4 +40,9 @@ export class CreateGuardianDto {
   @IsNotEmpty()
   @IsString()
   readonly address: string;
+
+  @ApiProperty({ example: 'Amateur', description: 'Level' })
+  @IsOptional()
+  @IsString()
+  readonly level: string;
 }

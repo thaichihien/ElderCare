@@ -26,7 +26,7 @@ export class Guardian {
   @Prop()
   address: string;
 
-  @Prop({ type: String, enum: Level, default: Level.Amateur })
+  @Prop({ type: String, enum: Level, default: Level.Amateur.toString() })
   level: Level;
 
   @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'Certificate' })

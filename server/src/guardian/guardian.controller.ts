@@ -17,7 +17,7 @@ import { isStringObject } from 'util/types';
 import { CreateGuardianDto } from './dto/create-guardian.dto';
 import { GuardianService } from './guardian.service';
 import { Guardian } from './schemas/guardian.schema';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateCertificateDto } from '../certificate/dto/create-certificate.dto';
 import { CreateExperienceDto } from 'src/experience/dto/create-experience.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -26,6 +26,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('guardian')
 export class GuardianController {
   constructor(private guardianService: GuardianService) {}
+
+  @ApiOperation({ summary: 'Create a new guardian' })
   @Post()
   async createGuardian(
     @Body()
@@ -34,6 +36,7 @@ export class GuardianController {
     return this.guardianService.create(guardian);
   }
 
+  @ApiOperation({ summary: 'Find a guardian with id' })
   @Get(':id')
   async findGuardianById(
     @Param('id', IsObjectId)
@@ -42,6 +45,7 @@ export class GuardianController {
     return this.guardianService.findById(id);
   }
 
+  @ApiOperation({ summary: 'Get all guardians' })
   @Get()
   async findAll(): Promise<Guardian[]> {
     return this.guardianService.findAll();
@@ -71,6 +75,14 @@ export class GuardianController {
     return this.guardianService.delete(id);
   }
 
+  @ApiQuery({
+    name: 'level',
+    required: true,
+    example: 'Professional',
+    description:
+      "Change level of guardian (only Amateur or Professional)",
+  })
+  @ApiOperation({ summary: 'update level (Amateur or Professional) to guardian with id' })
   @Patch(':id?')
   async updateLevel(
     @Param('id') id: string,
