@@ -50,7 +50,7 @@ export class AipController {
   async findByCCCD(
     @Param('CCCD')
     CCCD: string,
-  ): Promise<Aip[]> {
+  ): Promise<Aip> {
     return this.aipService.findByCCCD(CCCD);
   }
 
