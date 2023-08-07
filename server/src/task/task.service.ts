@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
@@ -38,7 +38,7 @@ export class TaskService {
     const schedule = await this.scheduleTask.findById(scheduleid);
 
     if (!schedule) {
-      throw new BadRequestException('Schedule not found');
+      throw new NotFoundException('Schedule not found');
     }
 
     if (createTaskDto.isCycle && !schedule.isCycle) {

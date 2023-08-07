@@ -7,6 +7,7 @@ import { AipDto } from './dto/aip.dto';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import Task from '../task/schemas/task.schema';
 import { Guardian } from '../guardian/schemas/guardian.schema';
+import { ImageModule } from 'src/image/image.module';
 
 describe('GuardianService', () => {
   let aipService: AipService;
@@ -72,6 +73,7 @@ describe('GuardianService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AipService,
+        
         {
           provide: getModelToken(Aip.name),
           useValue: mockAipModel,
