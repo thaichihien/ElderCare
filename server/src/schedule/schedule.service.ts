@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { Schedule } from './schemas/schedule.schema';
@@ -69,22 +69,45 @@ export class ScheduleService {
       };
       const startDateSearch = new Date(date);
       const endDateSearch = new Date(date);
+
+      if (!startDateSearch.valueOf()) {
+        throw new BadRequestException('invalid date format');
+      }
       startDateSearch.setHours(1, 0, 0);
       endDateSearch.setHours(23, 59, 0);
 
-      schedules = await this.scheduleModel
-        .find()
-        .where('guardian')
-        .equals(id)
-        .where('startTime')
-        .gte(startDateSearch.getTime())
-        .lte(endDateSearch.getTime());
+      schedules = await this.scheduleModel.find().and([
+        { guardian: id },
+        {
+          $or: [
+            { isCycle: true },
+            {
+              startTime: {
+                $gte: startDateSearch.getTime(),
+                $lte: endDateSearch.getTime(),
+              },
+            },
+          ],
+        },
+      ]);
+      // .where('guardian')
+      // .equals(id)
+      // .where('startTime')
+      // .gte(startDateSearch.getTime())
+      // .lte(endDateSearch.getTime());
 
       for (let index = 0; index < schedules.length; index++) {
         const element = schedules[index];
-        const h = new Date(element.startTime).getHours();
+        const dayShift = new Date(element.startTime);
 
-        this.arrangeDayShift(h, scheduleADay, element);
+        if (
+          element.isCycle &&
+          dayShift.getDay() != startDateSearch.getDay()
+        ) {
+          continue;
+        }
+
+        this.arrangeDayShift(dayShift.getHours(), scheduleADay, element);
       }
 
       return scheduleADay;
@@ -136,6 +159,17 @@ export class ScheduleService {
   }
 
   async findScheduleOfGuardianCurrentWeek(id: string, date: string) {
+    let selectedDate: Date;
+    if (date) {
+      selectedDate = new Date(date);
+    } else {
+      selectedDate = new Date();
+    }
+
+    if (!selectedDate.valueOf()) {
+      throw new BadRequestException('invalid date format');
+    }
+
     const week = this.getFirstDayAndLastDayOfWeek(date ?? new Date());
     const weekShift: WeekShift = {
       monday: {
@@ -170,21 +204,41 @@ export class ScheduleService {
       },
     };
 
-    const schedules = await this.scheduleModel
-      .find()
-      .where('guardian')
-      .equals(id)
-      .where('startTime')
-      .gte(week.firstDay.getTime())
-      .lte(week.lastDay.getTime());
+    const schedules = await this.scheduleModel.find().and([
+      { guardian: id },
+      {
+        $or: [
+          { isCycle: true },
+          {
+            startTime: {
+              $gte: week.firstDay.getTime(),
+              $lte: week.lastDay.getTime(),
+            },
+          },
+        ],
+      },
+    ]);
+
+    // const schedules = await this.scheduleModel
+    //   .find()
+    //   .where('guardian')
+    //   .equals(id)
+    //   .where('startTime')
+    //   .gte(week.firstDay.getTime())
+    //   .lte(week.lastDay.getTime());
 
     for (let index = 0; index < schedules.length; index++) {
       const element = schedules[index];
       const dateShift = new Date(element.startTime);
-      this.arrangeWeekShift(dateShift.getDay(),dateShift.getHours(),weekShift,element)
+      this.arrangeWeekShift(
+        dateShift.getDay(),
+        dateShift.getHours(),
+        weekShift,
+        element,
+      );
     }
 
-    return weekShift
+    return weekShift;
   }
 
   getFirstDayAndLastDayOfWeek(d: string | Date) {

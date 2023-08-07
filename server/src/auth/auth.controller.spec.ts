@@ -78,7 +78,7 @@ describe('AuthController', () => {
       });
     });
 
-    it('should return two token when created new admin account succesffully', async () => {
+    it('should return two token when created new admi n account succesffully', async () => {
       const authBody: CreateAdminDto = {
         username: 'chihien',
         name: 'Hiện',
