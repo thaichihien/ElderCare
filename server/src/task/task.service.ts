@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
@@ -18,6 +22,11 @@ export class TaskService {
     private imageSerive: ImageService,
   ) {}
 
+  /**
+   * Create a new task for guardian
+   * @param createTaskDto
+   * @returns
+   */
   async create(createTaskDto: CreateTaskDto) {
     const gid = createTaskDto.guardian;
     const aid = createTaskDto.aip;
@@ -58,6 +67,10 @@ export class TaskService {
     return newTask;
   }
 
+  /**
+   *
+   * @returns all the tasks of all guardians
+   */
   async findAll() {
     const tasks = await this.taskModel.find().populate('image');
     return tasks;
@@ -72,10 +85,15 @@ export class TaskService {
     return tasks;
   }
 
+  /**
+   *
+   * @param id guardian id
+   * @param date deadline of the task. If it not given, returns all the tasks
+   * @returns all the tasks of a guardian
+   */
   async findByGuardianId(id: string, date: string) {
     let guardianTasks;
     if (date) {
-      console.log(date);
       const startDateSearch = new Date(date);
       const endDateSearch = new Date(date);
 
