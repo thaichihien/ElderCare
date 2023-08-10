@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Guardian } from './schemas/guardian.schema';
@@ -53,6 +54,10 @@ export class GuardianService {
 
   async create(guardian: CreateGuardianDto): Promise<Guardian> {
     const created = await this.GuardianModel.create(guardian);
+
+    if (!created) {
+      throw new InternalServerErrorException(created, 'Cannot create guardian');
+    }
     return created;
   }
 
@@ -81,7 +86,6 @@ export class GuardianService {
   }
 
   async createCertificate(cerDto: CreateCertificateDto, guardianId: string) {
-
     const certificateDto = {
       title : cerDto.title,
       description :cerDto.description
@@ -135,7 +139,6 @@ export class GuardianService {
   }
 
   async createExperience(cerDto: CreateExperienceDto, guardianId: string) {
-
     const experienceDto = {
       title : cerDto.title,
       description : cerDto.description,
