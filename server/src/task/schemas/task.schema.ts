@@ -41,6 +41,9 @@ export default class Task {
 
   @Prop()
   note: string;
+
+  @Prop()
+  reason: string
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

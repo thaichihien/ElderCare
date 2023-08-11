@@ -28,21 +28,20 @@ export class ImageService {
         new ExifImage(file.buffer, async (error, edata: Exif.ExifData) => {
           if (error) {
             console.log('getExifData ' + error);
-            throw new BadRequestException(error)
+            throw new BadRequestException(error);
             reject(error);
           }
           console.log(edata);
           resolve(edata);
         });
       } catch (error) {
-        console.log('getExifData ' + error)
+        console.log('getExifData ' + error);
         throw new BadRequestException(error);
       }
     });
   }
 
   async saveImageToCloud(file: Express.Multer.File) {
-
     const formData = new FormData();
     formData.append('image', file.buffer.toString('base64'));
     const { data: imageData } = await firstValueFrom(
@@ -53,7 +52,9 @@ export class ImageService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            throw new InternalServerErrorException("save image to cloud server error : " + error);
+            throw new InternalServerErrorException(
+              'save image to cloud server error : ' + error,
+            );
           }),
         ),
     );
@@ -103,5 +104,35 @@ export class ImageService {
     }
 
     return ggData.results[0].formatted_address;
+  }
+
+  async getPointFromAddress(address: string) {
+    const { data: ggData } = await firstValueFrom(
+      this.httpService
+        .get(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&language=vi&key=${process.env.GOOGLE_KEY}`,
+        )
+        .pipe(
+          catchError((error: AxiosError) => {
+            throw new InternalServerErrorException(
+              'get address server error : ' + error,
+            );
+          }),
+        ),
+    );
+
+    //console.log(ggData)
+
+    console.log(ggData);
+    if (ggData.results.length <= 0) {
+      throw new InternalServerErrorException('API GOOGLE ERROR');
+    }
+
+    const coordiante = {
+      lat: ggData.results[0].geometry.location.lat,
+      long: ggData.results[0].geometry.location.long,
+    };
+
+    return coordiante;
   }
 }

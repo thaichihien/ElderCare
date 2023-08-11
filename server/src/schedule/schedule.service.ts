@@ -58,7 +58,10 @@ export class ScheduleService {
     return one;
   }
 
-  async findScheduleOfGuardian(id: string, date: string) {
+  async findScheduleOfGuardian(
+    id: string,
+    date: string,
+  ): Promise<Schedule[] | DayShift> {
     let schedules: Schedule[];
 
     if (date) {
@@ -96,14 +99,24 @@ export class ScheduleService {
       // .gte(startDateSearch.getTime())
       // .lte(endDateSearch.getTime());
 
-      for (let index = 0; index < schedules.length; index++) {
-        const element = schedules[index];
+      // for (let index = 0; index < schedules.length; index++) {
+      //   const element = schedules[index];
+      //   const dayShift = new Date(element.startTime);
+
+      //   if (
+      //     element.isCycle &&
+      //     dayShift.getDay() != startDateSearch.getDay()
+      //   ) {
+      //     continue;
+      //   }
+
+      //   this.arrangeDayShift(dayShift.getHours(), scheduleADay, element);
+      // }
+
+      for (const element of schedules) {
         const dayShift = new Date(element.startTime);
 
-        if (
-          element.isCycle &&
-          dayShift.getDay() != startDateSearch.getDay()
-        ) {
+        if (element.isCycle && dayShift.getDay() != startDateSearch.getDay()) {
           continue;
         }
 
@@ -170,7 +183,7 @@ export class ScheduleService {
       throw new BadRequestException('invalid date format');
     }
 
-    const week = this.getFirstDayAndLastDayOfWeek(date ?? new Date());
+    const week = this.getFirstDayAndLastDayOfWeek(selectedDate);
     const weekShift: WeekShift = {
       monday: {
         morning_shift: [],
@@ -227,8 +240,7 @@ export class ScheduleService {
     //   .gte(week.firstDay.getTime())
     //   .lte(week.lastDay.getTime());
 
-    for (let index = 0; index < schedules.length; index++) {
-      const element = schedules[index];
+    for (const element of schedules) {
       const dateShift = new Date(element.startTime);
       this.arrangeWeekShift(
         dateShift.getDay(),

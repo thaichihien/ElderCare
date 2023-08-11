@@ -6,12 +6,14 @@ import { Schedule, ScheduleSchema } from 'src/schedule/schemas/schedule.schema';
 import Task, { TaskSchema } from './schemas/task.schema';
 import { TaskController } from './task.controller';
 import { TaskService } from './task.service';
+import { Aip, AipSchema } from '../aip/schemas/aip.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Task.name, schema: TaskSchema },
       { name: Schedule.name, schema: ScheduleSchema },
+      { name: Aip.name, schema: AipSchema },
     ]),
 
     ImageModule,

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -11,6 +12,12 @@ import { Schedule } from 'src/schedule/schemas/schedule.schema';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import Task from './schemas/task.schema';
+import { checkObjectIdValid } from 'src/common/exception/object-id-invalid-exception';
+import { Aip } from '../aip/schemas/aip.schema';
+import {
+  MAX_DISTANCE_METER,
+  getDistanceFromLatLonInM,
+} from 'src/common/utils/calculate-distance';
 
 @Injectable()
 export class TaskService {
@@ -19,6 +26,8 @@ export class TaskService {
     private taskModel: mongoose.Model<Task>,
     @InjectModel(Schedule.name)
     private scheduleTask: mongoose.Model<Schedule>,
+    @InjectModel(Aip.name)
+    private aipModel: mongoose.Model<Aip>,
     private imageSerive: ImageService,
   ) {}
 
@@ -32,17 +41,21 @@ export class TaskService {
     const aid = createTaskDto.aip;
     const scheduleid = createTaskDto.schedule;
 
-    if (!mongoose.Types.ObjectId.isValid(gid)) {
-      throw new BadRequestException('Invalid guardian id');
-    }
+    // if (!mongoose.Types.ObjectId.isValid(gid)) {
+    //   throw new BadRequestException('Invalid guardian id');
+    // }
 
-    if (!mongoose.Types.ObjectId.isValid(aid)) {
-      throw new BadRequestException('Invalid aip id');
-    }
+    // if (!mongoose.Types.ObjectId.isValid(aid)) {
+    //   throw new BadRequestException('Invalid aip id');
+    // }
 
-    if (!mongoose.Types.ObjectId.isValid(scheduleid)) {
-      throw new BadRequestException('Invalid schedule id');
-    }
+    // if (!mongoose.Types.ObjectId.isValid(scheduleid)) {
+    //   throw new BadRequestException('Invalid schedule id');
+    // }
+
+    checkObjectIdValid(gid, 'Invalid guardian id');
+    checkObjectIdValid(aid, 'Invalid aip id');
+    checkObjectIdValid(scheduleid, 'Invalid schedulecd id');
 
     const schedule = await this.scheduleTask.findById(scheduleid);
 
@@ -173,17 +186,52 @@ export class TaskService {
       exifData.gps.GPSLongitude,
       exifData.gps.GPSLongitudeRef,
     );
-
-    // console.log('lat : ' + lat);
-    // console.log('long : ' + long);
-
     const dateString = this.convertTimestamp(exifData.exif.CreateDate);
-
-    //const date = new Date(dateString)
-
-    //console.log(date.toISOString())
-
     const address = await this.imageSerive.getAddressStringFrom(lat, long);
+
+    // - get coordiante from aip
+
+    const task = await this.taskModel.findById(id);
+    const aip = await this.aipModel.findById(task.aip);
+    let isDone = false;
+    let aipPlacePoint;
+    const imageTaskPoint = {
+      lat: lat,
+      long: long,
+    };
+    if (!aip) {
+      throw new BadRequestException('aip not found');
+    }
+
+    if (!aip.coordinates) {
+      // - if not call from api
+      const coordiantes = await this.imageSerive.getPointFromAddress(
+        aip.address,
+      );
+      aipPlacePoint = coordiantes;
+    } else {
+      aipPlacePoint = {
+        lat: aip.coordinates.lat,
+        long: aip.coordinates.long,
+      };
+    }
+
+    // - calculate 2 point
+
+    const dis = getDistanceFromLatLonInM(
+      imageTaskPoint.lat,
+      imageTaskPoint.long,
+      aipPlacePoint.lat,
+      aipPlacePoint.long,
+    );
+
+    // - check if distance > MAX_DISTANCE_METER
+    console.log(dis);
+    if (dis > MAX_DISTANCE_METER) {
+      isDone = false;
+    } else {
+      isDone = true;
+    }
 
     //console.log('address : ' + address)
 
@@ -200,7 +248,7 @@ export class TaskService {
     const image = await this.imageSerive.saveImageToDatabase(imageDto);
 
     await this.taskModel.findByIdAndUpdate(id, {
-      isDone: true,
+      isDone: isDone,
       image: image._id,
     });
   }
