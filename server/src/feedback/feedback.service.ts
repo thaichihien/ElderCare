@@ -4,6 +4,7 @@ import { UpdateFeedbackDto } from './dto/update-feedback.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Feedback } from './schemas/feedback.schema';
+import { checkObjectIdValid } from 'src/common/exception/object-id-invalid-exception';
 
 @Injectable()
 export class FeedbackService {
@@ -12,17 +13,23 @@ export class FeedbackService {
     private feedbackModel: mongoose.Model<Feedback>,
   ) {}
 
+  
+
   async create(createFeedbackDto: CreateFeedbackDto) {
     let gid = createFeedbackDto.guardian;
     let aid = createFeedbackDto.aip;
 
-    if (!mongoose.Types.ObjectId.isValid(gid)) {
-      throw new BadRequestException('Invalid guardian id');
-    }
+    // if (!mongoose.Types.ObjectId.isValid(gid)) {
+    //   throw new BadRequestException('Invalid guardian id');
+    // }
 
-    if (!mongoose.Types.ObjectId.isValid(aid)) {
-      throw new BadRequestException('Invalid aip id');
-    }
+    // if (!mongoose.Types.ObjectId.isValid(aid)) {
+    //   throw new BadRequestException('Invalid aip id');
+    // }
+
+    checkObjectIdValid(gid,"Invalid guardian id")
+    checkObjectIdValid(aid,"Invalid aip id")
+
 
     createFeedbackDto.guardian = new mongoose.Types.ObjectId(gid);
     createFeedbackDto.aip = new mongoose.Types.ObjectId(aid);

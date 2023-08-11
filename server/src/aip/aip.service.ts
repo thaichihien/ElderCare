@@ -70,11 +70,6 @@ export class AipService {
     const endOfDay = new Date(date);
     endOfDay.setDate(endOfDay.getDate() + 1);
 
-    console.log(startOfDay);
-    console.log(format(startOfDay, 'dd-MM-yyyy'));
-    console.log(endOfDay);
-    console.log(format(endOfDay, 'dd-MM-yyyy'));
-
     const tasks = await this.taskModel.find({
       guardian: guardianId,
       deadline: {
@@ -88,7 +83,7 @@ export class AipService {
       .find({ _id: { $in: aipIds } })
       .select('_id firstName lastName dateOfBirth address');
 
-    console.log(aips);
+    
 
     return aips;
   }
@@ -118,7 +113,7 @@ export class AipService {
     await this.aipModel.findByIdAndDelete(id);
   }
 
-  async assignGuardian(aipId: string, guardianId: string) {
+  async assignGuardian(aipId: string, guardianId: string) : Promise<Aip> {
     
     const checkGuardian = await this.guardianModel.findById(guardianId)
 
@@ -142,7 +137,7 @@ export class AipService {
     return updated;
   }
 
-  async unassignGuardian(aipId: string) {
+  async unassignGuardian(aipId: string) : Promise<Aip> {
     const updated = await this.aipModel.findByIdAndUpdate(
       aipId,
       {

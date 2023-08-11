@@ -8,6 +8,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ImageModule } from 'src/image/image.module';
 import { ImageService } from 'src/image/image.service';
+import { Aip } from '../aip/schemas/aip.schema';
 
 describe('TaskService', () => {
   let taskService: TaskService;
@@ -125,6 +126,10 @@ describe('TaskService', () => {
         },
         {
           provide: getModelToken(Schedule.name),
+          useValue: mockModel,
+        },
+        {
+          provide: getModelToken(Aip.name),
           useValue: mockModel,
         },
       ],
