@@ -6,9 +6,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { ImageModule } from 'src/image/image.module';
 import { ImageService } from 'src/image/image.service';
 import { Aip } from '../aip/schemas/aip.schema';
+import { GuardianService } from 'src/guardian/guardian.service';
 
 describe('TaskService', () => {
   let taskService: TaskService;
@@ -118,6 +118,10 @@ describe('TaskService', () => {
         TaskService,
         {
           provide: ImageService,
+          useValue: {},
+        },
+        {
+          provide: GuardianService,
           useValue: {},
         },
         {

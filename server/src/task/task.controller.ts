@@ -66,7 +66,7 @@ export class TaskController {
     @Query('date') date: string,
     @Query('aip-id') aipId: string,
   ) {
-    return this.taskService.findByGuardianId(id, date,aipId);
+    return this.taskService.findByGuardianId(id, date, aipId);
   }
 
   @ApiOperation({ summary: 'Upload task image' })
@@ -86,6 +86,32 @@ export class TaskController {
   @Get('refresh')
   updateDeadline() {
     return this.taskService.updateAllTaskDeadline();
+  }
+
+  @ApiQuery({
+    name: 'date',
+    required: false,
+    example: '2023-08-03',
+    description:
+      'format : YYYY-MM-DD, only the statistics of the tasks starting from this date are counted if date is provided',
+  })
+  @ApiOperation({ summary: 'get all  guardian task statistics' })
+  @Get('statistics')
+  statisticsAll(@Query('date') date: string) {
+    return this.taskService.statGuardianTask(null, date);
+  }
+
+  @ApiQuery({
+    name: 'date',
+    required: false,
+    example: '2023-08-03',
+    description:
+      'format : YYYY-MM-DD,  only the statistics of the tasks starting from this date are counted if date is provided ',
+  })
+  @ApiOperation({ summary: 'get guardian task statistics with id' })
+  @Get('statistics/:id')
+  statistics(@Param('id') id: string, @Query('date') date: string) {
+    return this.taskService.statGuardianTask(id, date);
   }
 
   @ApiOperation({ summary: 'Find task with id' })

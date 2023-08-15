@@ -7,6 +7,7 @@ import Task, { TaskSchema } from './schemas/task.schema';
 import { TaskController } from './task.controller';
 import { TaskService } from './task.service';
 import { Aip, AipSchema } from '../aip/schemas/aip.schema';
+import { GuardianModule } from 'src/guardian/guardian.module';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { Aip, AipSchema } from '../aip/schemas/aip.schema';
       { name: Schedule.name, schema: ScheduleSchema },
       { name: Aip.name, schema: AipSchema },
     ]),
-
+    GuardianModule,
     ImageModule,
     //ScheduleModule
   ],

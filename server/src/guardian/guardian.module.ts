@@ -23,5 +23,6 @@ import { ImageModule } from 'src/image/image.module';
   ],
   controllers: [GuardianController],
   providers: [GuardianService],
+  exports: [GuardianService],
 })
 export class GuardianModule {}
