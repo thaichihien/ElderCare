@@ -184,4 +184,12 @@ export class GuardianService {
 
     return guardian;
   }
+
+
+  async getAllGuardianId(){
+    const ids = await this.GuardianModel.find().distinct('_id')
+
+    return ids
+  }
+
 }

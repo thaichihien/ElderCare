@@ -18,6 +18,7 @@ import {
   MAX_DISTANCE_METER,
   getDistanceFromLatLonInM,
 } from 'src/common/utils/calculate-distance';
+import { GuardianService } from 'src/guardian/guardian.service';
 
 @Injectable()
 export class TaskService {
@@ -29,6 +30,7 @@ export class TaskService {
     @InjectModel(Aip.name)
     private aipModel: mongoose.Model<Aip>,
     private imageSerive: ImageService,
+    private guardianService: GuardianService,
   ) {}
 
   /**
@@ -299,5 +301,90 @@ export class TaskService {
         },
       ],
     );
+  }
+
+  async statGuardianTask(guardianId: string,date : string) {
+    if (guardianId) {
+      return this.statGuardianTaskWithID(guardianId,date);
+    }
+
+    const guardianIds = await this.guardianService.getAllGuardianId();
+    const guardianStatisticsList = [];
+
+    for (let index = 0; index < guardianIds.length; index++) {
+      const id = guardianIds[index].toString();
+
+      const guardianStatistics = await this.statGuardianTaskWithID(id,date);
+      guardianStatisticsList.push(guardianStatistics);
+    }
+
+    // const guardianStatistics = {
+    //   total : total,
+    //   done : done,
+    //   not_done : notDone
+    // }
+
+    return guardianStatisticsList;
+  }
+
+  async statGuardianTaskWithID(guardianId: string, from: string) {
+    let total: number;
+    let done: number;
+    let notDone: number;
+    if (!from) {
+      total = await this.taskModel.count({
+        guardian: guardianId,
+        deadline: { $lt: new Date() },
+      });
+      notDone = await this.taskModel.count({
+        guardian: guardianId,
+        isDone: false,
+        deadline: { $lt: new Date() },
+      });
+      done = await this.taskModel.count({
+        guardian: guardianId,
+        isDone: true,
+        deadline: { $lt: new Date() },
+      });
+    } else {
+      const fromDate = new Date(from);
+
+      if (!fromDate.valueOf()) {
+        throw new BadRequestException('invalid date');
+      }
+
+      total = await this.taskModel.count({
+        guardian: guardianId,
+        deadline: {
+          $gte: fromDate,
+          $lt: new Date(),
+        },
+      });
+      notDone = await this.taskModel.count({
+        guardian: guardianId,
+        isDone: false,
+        deadline: {
+          $gte: fromDate,
+          $lt: new Date(),
+        },
+      });
+      done = await this.taskModel.count({
+        guardian: guardianId,
+        isDone: true,
+        deadline: {
+          $gte: fromDate,
+          $lt: new Date(),
+        },
+      });
+    }
+
+    const guardianStatistics = {
+      guardian: guardianId,
+      total: total,
+      done: done,
+      not_done: notDone,
+    };
+
+    return guardianStatistics;
   }
 }
