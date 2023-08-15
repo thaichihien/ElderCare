@@ -51,14 +51,22 @@ export class TaskController {
     required: false,
     example: '2023-08-03',
     description:
-      'format : YYYY-MM-DD, if date is not provided,get all task of a guardian ',
+      'format : YYYY-MM-DD, if date is not provided,get all task of a guardian with deadline >= current date ',
+  })
+  @ApiQuery({
+    name: 'aip-id',
+    required: false,
+    example: '',
+    description:
+      'id of aip, if not given, return all task related to all aip of guardian',
   })
   @Get('/guardian/:id')
   findByGuardianId(
     @Param('id', IsObjectId) id: string,
     @Query('date') date: string,
+    @Query('aip-id') aipId: string,
   ) {
-    return this.taskService.findByGuardianId(id, date);
+    return this.taskService.findByGuardianId(id, date,aipId);
   }
 
   @ApiOperation({ summary: 'Upload task image' })
