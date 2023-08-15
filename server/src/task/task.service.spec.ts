@@ -238,7 +238,7 @@ describe('TaskService', () => {
       const id = '64c9f0466a8c61cd08c9e19b';
       const date = 'abcded';
 
-      await expect(taskService.findByGuardianId(id, date)).rejects.toThrow(
+      await expect(taskService.findByGuardianId(id, date,null)).rejects.toThrow(
         BadRequestException,
       );
 
@@ -273,7 +273,7 @@ describe('TaskService', () => {
 
       jest.spyOn(taskModel, 'find').mockImplementation(() => chainFindMock);
 
-      const tasks = await taskService.findByGuardianId(id, date);
+      const tasks = await taskService.findByGuardianId(id, date,null);
 
       expect(taskModel.find).toHaveBeenCalled();
 
@@ -300,7 +300,7 @@ describe('TaskService', () => {
 
       jest.spyOn(taskModel, 'find').mockImplementation(() => chainFindMock);
 
-      const tasks = await taskService.findByGuardianId(id, null);
+      const tasks = await taskService.findByGuardianId(id, null,null);
 
       expect(taskModel.find).toHaveBeenCalled();
 

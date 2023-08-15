@@ -104,7 +104,7 @@ export class TaskService {
    * @param date deadline of the task. If it not given, returns all the tasks
    * @returns all the tasks of a guardian
    */
-  async findByGuardianId(id: string, date: string) {
+  async findByGuardianId(id: string, date: string, aipId: string) {
     let guardianTasks;
     if (date) {
       const startDateSearch = new Date(date);
@@ -120,22 +120,47 @@ export class TaskService {
       // console.log(startDateSearch)
       // console.log(endDateSearch)
 
-      guardianTasks = await this.taskModel
-        .find()
-        .where('guardian')
-        .equals(id)
-        .where('deadline')
-        .gte(startDateSearch.getTime())
-        .lte(endDateSearch.getTime())
-        .populate('image');
+      if (aipId) {
+        guardianTasks = await this.taskModel
+          .find()
+          .where('guardian')
+          .equals(id)
+          .where('aip')
+          .equals(aipId)
+          .where('deadline')
+          .gte(startDateSearch.getTime())
+          .lte(endDateSearch.getTime())
+          .populate('image');
+      } else {
+        guardianTasks = await this.taskModel
+          .find()
+          .where('guardian')
+          .equals(id)
+          .where('deadline')
+          .gte(startDateSearch.getTime())
+          .lte(endDateSearch.getTime())
+          .populate('image');
+      }
     } else {
-      guardianTasks = await this.taskModel
-        .find()
-        .where('guardian')
-        .equals(id)
-        .where('deadline')
-        .gte(new Date().getTime())
-        .populate('image');
+      if (aipId) {
+        guardianTasks = await this.taskModel
+          .find()
+          .where('guardian')
+          .equals(id)
+          .where('aip')
+          .equals(aipId)
+          .where('deadline')
+          .gte(new Date().getTime())
+          .populate('image');
+      } else {
+        guardianTasks = await this.taskModel
+          .find()
+          .where('guardian')
+          .equals(id)
+          .where('deadline')
+          .gte(new Date().getTime())
+          .populate('image');
+      }
     }
 
     return guardianTasks;
