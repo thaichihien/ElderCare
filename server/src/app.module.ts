@@ -16,6 +16,7 @@ import { CertificateModule } from './certificate/certificate.module';
 import { ExperienceModule } from './experience/experience.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { ReportModule } from './report/report.module';
+import { CallModule } from './call/call.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { ReportModule } from './report/report.module';
     CertificateModule,
     ExperienceModule,
     FeedbackModule,
-    ReportModule
+    ReportModule,
+    CallModule,
   ],
   controllers: [AppController],
   providers: [AppService],
