@@ -5,6 +5,7 @@ import { UpdateReportDto } from './dto/update-report.dto';
 import { IsObjectId } from 'src/utils/is-object-id.pipe';
 import { ApiTags } from '@nestjs/swagger';
 import { Report } from './schemas/report.schema';
+import { ReportDto } from './dto/report.dto';
 
 @ApiTags('Report')
 @Controller('report')
@@ -20,17 +21,17 @@ export class ReportController {
   }
 
   @Get()
-  findAll(): Promise<Report[]> {
+  findAll(): Promise<ReportDto[]> {
     return this.reportService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', IsObjectId) id: string): Promise<Report> {
+  findOne(@Param('id', IsObjectId) id: string): Promise<ReportDto> {
     return this.reportService.findOne(id);
   }
 
   @Get('guardian/:guardianId')
-  findReportByGuardianId(@Param('guardianId') guardianId: string): Promise<Report[]> {
+  findReportByGuardianId(@Param('guardianId') guardianId: string): Promise<ReportDto[]> {
     return this.reportService.findReportByGuardianId(guardianId);
   }
 

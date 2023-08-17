@@ -6,6 +6,7 @@ import mongoose, { isValidObjectId } from 'mongoose';
 import { Guardian } from 'src/guardian/schemas/guardian.schema';
 import { Aip } from 'src/aip/schemas/aip.schema';
 import { Report } from './schemas/report.schema';
+import { ReportDto } from './dto/report.dto';
 
 @Injectable()
 export class ReportService {
@@ -29,7 +30,7 @@ export class ReportService {
     if (!guardian) {
       throw new NotFoundException(`Guardian not found with id ${guardianId}`);
     }
-    
+
     const aip = await this.aipModel.findById(aipId);
     if (!aip) {
       throw new NotFoundException(`Aip not found with id ${aipId}`);
@@ -41,17 +42,38 @@ export class ReportService {
       ...reportData,
     });
 
-    return newReport.save();
+    newReport.save()
+    return;
   }
 
-  async findAll(): Promise<Report[]> {
+  async findAll(): Promise<ReportDto[]> {
 
     const reports = await this.reportModel.find();
 
-    return reports;
+    const reportDtos: ReportDto[] = [];
+    // Lấy thông tin từ Aip và gắn vào ReportDto
+    for (const report of reports) {
+      const aip = await this.aipModel.findOne({ _id: report.aip }).exec();
+
+      const reportDto: ReportDto = {
+        reportId: report._id,
+        guardian: report.guardian,
+        aip: report.aip,
+        name: `${aip.firstName} ${aip.lastName}`, // Lấy firstName và lastName từ Aip
+        date: report.date,
+        summarization: report.summarization,
+        healthStatusOfAip: report.healthStatusOfAip,
+        supportRequest: report.supportRequest,
+        note: report.note,
+      };
+
+      reportDtos.push(reportDto);
+    }
+
+    return reportDtos;
   }
 
-  async findOne(reportId: string): Promise<Report> {
+  async findOne(reportId: string): Promise<ReportDto> {
 
     const report = await this.reportModel.findById(reportId);
 
@@ -59,20 +81,54 @@ export class ReportService {
       throw new NotFoundException(`report not found with id ${reportId}`);
     }
 
-    return report;
+    const aip = await this.aipModel.findOne({ _id: report.aip }).exec();
+
+    const reportDto: ReportDto = {
+      reportId: report._id,
+      guardian: report.guardian,
+      aip: report.aip,
+      name: `${aip.firstName} ${aip.lastName}`, // Lấy firstName và lastName từ Aip
+      date: report.date,
+      summarization: report.summarization,
+      healthStatusOfAip: report.healthStatusOfAip,
+      supportRequest: report.supportRequest,
+      note: report.note,
+    };
+
+    return reportDto;
   }
 
-  async findReportByGuardianId(guardianId: string): Promise<Report[]> {
+  async findReportByGuardianId(guardianId: string): Promise<ReportDto[]> {
 
     console.log('GuardianId in ObjectId format:', guardianId);
 
-    const reports = await this.reportModel.find({guardian: guardianId});
+    const reports = await this.reportModel.find({ guardian: guardianId });
 
-    return reports;
+    const reportDtos: ReportDto[] = [];
+    // Lấy thông tin từ Aip và gắn vào ReportDto
+    for (const report of reports) {
+      const aip = await this.aipModel.findOne({ _id: report.aip }).exec();
+
+      const reportDto: ReportDto = {
+        reportId: report._id,
+        guardian: report.guardian,
+        aip: report.aip,
+        name: `${aip.firstName} ${aip.lastName}`, // Lấy firstName và lastName từ Aip
+        date: report.date,
+        summarization: report.summarization,
+        healthStatusOfAip: report.healthStatusOfAip,
+        supportRequest: report.supportRequest,
+        note: report.note,
+      };
+
+      reportDtos.push(reportDto);
+    }
+
+    return reportDtos;
   }
 
   async update(reportId: string, updateReportDto: UpdateReportDto): Promise<Report> {
-    
+
     const report = await this.reportModel.findById(reportId);
 
     if (!report) {
