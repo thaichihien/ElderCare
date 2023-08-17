@@ -8,6 +8,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import Task from '../task/schemas/task.schema';
 import { Guardian } from '../guardian/schemas/guardian.schema';
 import { ImageModule } from 'src/image/image.module';
+import { Report } from 'src/report/schemas/report.schema';
 
 describe('GuardianService', () => {
   let aipService: AipService;
@@ -15,6 +16,7 @@ describe('GuardianService', () => {
   let aipModel: Model<Aip>;
   let taskModel: Model<Task>;
   let guardianModel: Model<Guardian>;
+  let reportModel: Model<Report>;
 
   const mockAipModel = {
     findById: jest.fn(),
@@ -86,6 +88,10 @@ describe('GuardianService', () => {
           provide: getModelToken(Guardian.name),
           useValue: mockAipModel,
         },
+        {
+          provide: getModelToken(Report.name),
+          useValue: mockAipModel,
+        },
       ],
     }).compile();
 
@@ -93,6 +99,7 @@ describe('GuardianService', () => {
     aipModel = module.get<Model<Aip>>(getModelToken(Aip.name));
     taskModel = module.get<Model<Task>>(getModelToken(Task.name));
     guardianModel = module.get<Model<Guardian>>(getModelToken(Guardian.name));
+    reportModel = module.get<Model<Report>>(getModelToken(Report.name));
   });
 
   afterEach(() => {

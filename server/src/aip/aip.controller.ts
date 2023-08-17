@@ -68,6 +68,20 @@ export class AipController {
     return this.aipService.findAipsByGuardianAndDate(guardianId, date);
   }
 
+  @ApiOperation({ summary: 'Get unreported aips by guardianId and date' })
+  @Get('/unreported/guardian/:guardianId')
+  @ApiQuery({
+    name: 'date',
+    required: true,
+    description: 'The date parameter in the format yyyy-MM-dd',
+  })
+  async findUnreportedAIPByGuardianAndDate(
+    @Param('guardianId') guardianId: string,
+    @Query('date') date: string,
+  ): Promise<Aip[]> {
+    return this.aipService.findUnreportedAIPByGuardianAndDate(guardianId, date);
+  }
+
   @Put('unassign/:id')
   async unassign(@Param('id', IsObjectId) id: string): Promise<Aip> {
     return this.aipService.unassignGuardian(id);

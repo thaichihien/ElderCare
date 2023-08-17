@@ -127,6 +127,33 @@ export class ReportService {
     return reportDtos;
   }
 
+  async findReportByGuardianIdAndDate(guardianId: string, date: string): Promise<ReportDto[]> {
+
+    const reports = await this.reportModel.find({ guardian: guardianId, date: date });
+
+    const reportDtos: ReportDto[] = [];
+    // Lấy thông tin từ Aip và gắn vào ReportDto
+    for (const report of reports) {
+      const aip = await this.aipModel.findOne({ _id: report.aip }).exec();
+
+      const reportDto: ReportDto = {
+        reportId: report._id,
+        guardian: report.guardian,
+        aip: report.aip,
+        name: `${aip.firstName} ${aip.lastName}`, // Lấy firstName và lastName từ Aip
+        date: report.date,
+        summarization: report.summarization,
+        healthStatusOfAip: report.healthStatusOfAip,
+        supportRequest: report.supportRequest,
+        note: report.note,
+      };
+
+      reportDtos.push(reportDto);
+    }
+
+    return reportDtos;
+  }
+
   async update(reportId: string, updateReportDto: UpdateReportDto): Promise<Report> {
 
     const report = await this.reportModel.findById(reportId);

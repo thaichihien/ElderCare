@@ -3,7 +3,7 @@ import { ReportService } from './report.service';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { IsObjectId } from 'src/utils/is-object-id.pipe';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Report } from './schemas/report.schema';
 import { ReportDto } from './dto/report.dto';
 
@@ -30,9 +30,21 @@ export class ReportController {
     return this.reportService.findOne(id);
   }
 
+  // @Get('guardian/:guardianId')
+  // findReportByGuardianId(@Param('guardianId') guardianId: string): Promise<ReportDto[]> {
+  //   return this.reportService.findReportByGuardianId(guardianId);
+  // }
+
+  @ApiOperation({ summary: 'Get reports by guardianId and date' })
   @Get('guardian/:guardianId')
-  findReportByGuardianId(@Param('guardianId') guardianId: string): Promise<ReportDto[]> {
-    return this.reportService.findReportByGuardianId(guardianId);
+  @ApiQuery({
+    name: 'date',
+    required: true,
+    description: 'The date parameter in the format yyyy-MM-dd',
+  })
+  findReportByGuardianIdAndDate(@Param('guardianId') guardianId: string,
+                                @Query('date') date: string): Promise<ReportDto[]> {
+    return this.reportService.findReportByGuardianIdAndDate(guardianId, date);
   }
 
   @Patch(':id')
