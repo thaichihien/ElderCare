@@ -21,6 +21,8 @@ import { AipNoteDto } from './dto/aip-note.dto';
 import { AipDto } from './dto/aip.dto';
 import { Aip } from './schemas/aip.schema';
 import { Guardian } from '../guardian/schemas/guardian.schema';
+import { Report } from '../report/schemas/report.schema';
+
 
 @Injectable()
 export class AipService {
@@ -32,7 +34,9 @@ export class AipService {
     private taskModel: mongoose.Model<Task>,
     @InjectModel(Guardian.name)
     private guardianModel: mongoose.Model<Guardian>,
-  ) {}
+    @InjectModel(Report.name)
+    private reportModel: mongoose.Model<Report>,
+  ) { }
 
   async findAll(): Promise<Aip[]> {
     const aips = await this.aipModel.find();
@@ -51,7 +55,7 @@ export class AipService {
 
   async findByCCCD(CCCD: string): Promise<Aip> {
     const aip = await this.aipModel.findOne({
-        CCCD : CCCD
+      CCCD: CCCD
     });
 
     if (!aip) {
@@ -83,7 +87,45 @@ export class AipService {
       .find({ _id: { $in: aipIds } })
       .select('_id firstName lastName dateOfBirth address');
 
+    return aips;
+  }
+
+  async findUnreportedAIPByGuardianAndDate(
+    guardianId: string,
+    date: string,
+  ): Promise<Aip[]> {
     
+    const startOfDay = new Date(date);
+
+    const endOfDay = new Date(date);
+    endOfDay.setDate(endOfDay.getDate() + 1);
+
+    const tasks = await this.taskModel.find({
+      guardian: guardianId,
+      deadline: {
+        $gte: startOfDay,
+        $lt: endOfDay,
+      },
+    });
+    const aipIds = tasks.map((task) => task.aip); // Lấy danh sách các ObjectId của Aip
+
+    const reports = await this.reportModel.find({ guardian: guardianId, date: date });
+
+    const reportedAip = reports.map(report => report.aip);
+
+    const unreportedAip: Aip[] = [];
+
+    for (const aip of aipIds) {
+
+      const isReported = reportedAip.some(aipR => aipR.toString() === aip.toString());
+      if (!isReported) {
+        unreportedAip.push(aip);
+      }
+    }
+
+    const aips = await this.aipModel
+    .find({ _id: { $in: unreportedAip } })
+    .select('_id firstName lastName dateOfBirth address');
 
     return aips;
   }
@@ -113,12 +155,12 @@ export class AipService {
     await this.aipModel.findByIdAndDelete(id);
   }
 
-  async assignGuardian(aipId: string, guardianId: string) : Promise<Aip> {
-    
+  async assignGuardian(aipId: string, guardianId: string): Promise<Aip> {
+
     const checkGuardian = await this.guardianModel.findById(guardianId)
 
-    if(!checkGuardian){
-        throw new BadRequestException('Guardian not found')
+    if (!checkGuardian) {
+      throw new BadRequestException('Guardian not found')
     }
 
 
@@ -130,14 +172,14 @@ export class AipService {
       { new: true },
     );
 
-    if(!updated){
-        throw new BadRequestException('Aip not found')
+    if (!updated) {
+      throw new BadRequestException('Aip not found')
     }
 
     return updated;
   }
 
-  async unassignGuardian(aipId: string) : Promise<Aip> {
+  async unassignGuardian(aipId: string): Promise<Aip> {
     const updated = await this.aipModel.findByIdAndUpdate(
       aipId,
       {

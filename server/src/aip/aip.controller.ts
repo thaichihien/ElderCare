@@ -54,8 +54,8 @@ export class AipController {
     return this.aipService.findByCCCD(CCCD);
   }
 
-  @ApiOperation({ summary: 'Get aips by guardianId and date' })
-  @Get('/guardian/:guardianId')
+  @ApiOperation({ summary: 'Get reported aips by guardianId and date' })
+  @Get('/reported/guardian/:guardianId')
   @ApiQuery({
     name: 'date',
     required: true,
@@ -66,6 +66,20 @@ export class AipController {
     @Query('date') date: string,
   ): Promise<Aip[]> {
     return this.aipService.findAipsByGuardianAndDate(guardianId, date);
+  }
+
+  @ApiOperation({ summary: 'Get unreported aips by guardianId and date' })
+  @Get('/unreported/guardian/:guardianId')
+  @ApiQuery({
+    name: 'date',
+    required: true,
+    description: 'The date parameter in the format yyyy-MM-dd',
+  })
+  async findUnreportedAIPByGuardianAndDate(
+    @Param('guardianId') guardianId: string,
+    @Query('date') date: string,
+  ): Promise<Aip[]> {
+    return this.aipService.findUnreportedAIPByGuardianAndDate(guardianId, date);
   }
 
   @Put('unassign/:id')
