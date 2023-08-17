@@ -54,8 +54,8 @@ export class AipController {
     return this.aipService.findByCCCD(CCCD);
   }
 
-  @ApiOperation({ summary: 'Get reported aips by guardianId and date' })
-  @Get('/reported/guardian/:guardianId')
+  @ApiOperation({ summary: 'Get aips by guardianId and date' })
+  @Get('/guardian/:guardianId')
   @ApiQuery({
     name: 'date',
     required: true,
