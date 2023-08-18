@@ -132,7 +132,8 @@ export class TaskService {
           .where('deadline')
           .gte(startDateSearch.getTime())
           .lte(endDateSearch.getTime())
-          .populate('image');
+          .populate('image')
+          .populate('aip');
       } else {
         guardianTasks = await this.taskModel
           .find()
@@ -141,7 +142,8 @@ export class TaskService {
           .where('deadline')
           .gte(startDateSearch.getTime())
           .lte(endDateSearch.getTime())
-          .populate('image');
+          .populate('image')
+          .populate('aip');
       }
     } else {
       if (aipId) {
@@ -153,7 +155,8 @@ export class TaskService {
           .equals(aipId)
           .where('deadline')
           .gte(new Date().getTime())
-          .populate('image');
+          .populate('image')
+          .populate('aip');
       } else {
         guardianTasks = await this.taskModel
           .find()
@@ -161,7 +164,8 @@ export class TaskService {
           .equals(id)
           .where('deadline')
           .gte(new Date().getTime())
-          .populate('image');
+          .populate('image')
+          .populate('aip');
       }
     }
 
@@ -303,9 +307,9 @@ export class TaskService {
     );
   }
 
-  async statGuardianTask(guardianId: string,date : string) {
+  async statGuardianTask(guardianId: string, date: string) {
     if (guardianId) {
-      return this.statGuardianTaskWithID(guardianId,date);
+      return this.statGuardianTaskWithID(guardianId, date);
     }
 
     const guardianIds = await this.guardianService.getAllGuardianId();
@@ -314,7 +318,7 @@ export class TaskService {
     for (let index = 0; index < guardianIds.length; index++) {
       const id = guardianIds[index].toString();
 
-      const guardianStatistics = await this.statGuardianTaskWithID(id,date);
+      const guardianStatistics = await this.statGuardianTaskWithID(id, date);
       guardianStatisticsList.push(guardianStatistics);
     }
 
