@@ -1,0 +1,39 @@
+.welcome-body {
+    height: calc(100vh - 68px);
+    width: 100%;
+    background-color: #50709c;
+
+    display: flex;
+    align-items: center;
+}
+
+.left-image,
+.right-image {
+    flex: 1;
+}
+
+.welcome-body img {
+    height: 600px;
+    object-fit: contain;
+}
+
+.title{
+    max-width: 550px;
+    font-size: 5rem;
+    color: white;
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.btn-start{
+    width: 120px;
+    height: 50px;
+    border-radius: 12px;
+    border: none;
+    margin-top: 20px;
+    font-size: 2rem;
+
+    &:hover{
+        background-color: #e7e7e7;
+        color: #50709c;
+    }
+}
