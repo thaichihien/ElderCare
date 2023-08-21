@@ -1,0 +1,21 @@
+.data-view{
+    width: calc(100vw - 220px);
+    margin-top: 10px;
+    border: 1px solid #ccc;
+}
+
+.data-view h2{
+    margin: 10px;
+    font-weight: bold;
+}
+
+.header-data-view{
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-add{
+    margin-right: 30px;
+    height: 40px;
+    width: 200px;
+}

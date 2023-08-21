@@ -1,0 +1,42 @@
+.data-view{
+    width: calc(100vw - 220px);
+    margin-top: 10px;
+    border: 1px solid #ccc;
+}
+
+.data-view h2{
+    margin: 10px;
+    font-weight: bold;
+}
+
+.wrap{
+    width: 95%;
+    padding: 20px 5px 20px 65px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.item-group{
+    width: 270px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+}
+
+.item-count{
+    font-size: 2.2rem;
+    font-weight: bold;
+}
+
+.header-wrap{
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-wrap input{
+    margin-right: 85px;
+    width: 200px;
+}
