@@ -32,15 +32,11 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - install
+      - install:
           filters:
             branches:
               ignore:
                 - main 
-            pull_requests:
-              types:
-                - opened 
-                - synchronize
       - test:
           requires:
             - install
@@ -48,7 +44,3 @@ workflows:
             branches:
               ignore:
                 - main 
-            pull_requests:
-              types:
-                - opened 
-                - synchronize
