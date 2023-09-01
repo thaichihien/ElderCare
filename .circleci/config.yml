@@ -32,7 +32,15 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - install
+      - install:
+          filters:
+            branches:
+              ignore:
+                - main 
       - test:
           requires:
             - install
+          filters:
+            branches:
+              ignore:
+                - main 
