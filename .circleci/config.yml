@@ -33,6 +33,22 @@ workflows:
   build-and-test:
     jobs:
       - install
+          filters:
+            branches:
+              ignore:
+                - main 
+            pull_requests:
+              types:
+                - opened 
+                - synchronize
       - test:
           requires:
             - install
+          filters:
+            branches:
+              ignore:
+                - main 
+            pull_requests:
+              types:
+                - opened 
+                - synchronize
